@@ -1,14 +1,12 @@
 {
   "name": "luisowka",
-  "homepage": "https://AnanasikA.github.io/luisowka",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-  "dev": "next dev",
-  "build": "next build",
-  "export": "next build && next export",
-  "deploy": "gh-pages -d out"
-
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
     "next": "15.4.3",
