@@ -26,13 +26,15 @@ export default function Hero() {
       {/* Treść na tle wideo */}
       <div className="relative z-20 h-full w-full flex flex-col items-center justify-end text-center px-4 pb-24 sm:px-6 sm:pb-32 text-white">
         <h1
-          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-4 sm:mb-6 leading-tight opacity-0 fade-up"
-          style={{
-            fontFamily: '"Playfair Display", serif',
-            fontWeight: 700,
-            lineHeight: 1.2,
-          }}
-        >
+  className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-4 sm:mb-6 leading-tight opacity-0 fade-up"
+  style={{
+    fontFamily: '"Playfair Display", serif',
+    fontWeight: 700,
+    lineHeight: 1.2,
+    color: '#fdfbf7', // dodane
+  }}
+>
+
           Luisówka – domek w górach
         </h1>
 

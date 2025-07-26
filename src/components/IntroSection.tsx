@@ -8,9 +8,9 @@ export default function IntroSection() {
       <div className="grid md:grid-cols-2 gap-10 items-center w-full max-w-[1600px] mx-auto px-6">
         
         {/* Zdjęcie */}
-        <div className="flex justify-center">
+        <div className="flex justify-center fade-up">
           <Image
-            src="/gory.jpg"
+            src="/domek.webp"
             alt="Domek Luisówka w górach"
             width={600}
             height={400}
@@ -19,7 +19,7 @@ export default function IntroSection() {
         </div>
 
         {/* Tekst */}
-        <div className="text-center md:text-left">
+        <div className="text-center md:text-left fade-up-delayed">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
             Wynajmij <span style={{ fontFamily: '"Playfair Display", serif' }}>Luisówkę</span><br />
             i odpocznij w naturze
