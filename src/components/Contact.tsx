@@ -75,6 +75,8 @@ export default function Kontakt() {
                 />
               </div>
 
+              
+
               <div className="flex flex-col">
                 <label htmlFor="email" className="mb-1 font-semibold">Adres email</label>
                 <input
