@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import clsx from 'clsx';
 
 const atrakcje = [
   { nazwa: 'Wyciąg krzesełkowy Bolek (1,5 km)', opis: 'Idealny na szybkie wypady narciarskie – blisko i komfortowo.', obraz: '/okolica-bolek.jpg' },
@@ -13,20 +14,19 @@ const atrakcje = [
   { nazwa: 'Jaskinia Niedźwiedzia (4,5 km)', opis: 'Jedna z najpiękniejszych jaskiń w Polsce – trasa turystyczna z przewodnikiem.', obraz: '/okolica-jaskinia.jpg' },
   { nazwa: 'Sky Bridge 721 – Dolní Morava (11 km)', opis: 'Najdłuższy most wiszący na świecie – widoki, których się nie zapomina.', obraz: '/okolica-skybridge.jpg' },
   { nazwa: 'Czechy: Kunčice, Branná, Kladské Sedlo', opis: 'Urokliwe czeskie miejscowości i górskie szlaki warte odkrycia.', obraz: '/okolica-czechy.jpg' },
-  {nazwa: 'Kopalnia Złota w Złotym Stoku (33 km)', opis: 'Zabytkowa kopalnia z podziemną trasą turystyczną, muzeum i podziemnym wodospadem – świetna atrakcja dla całej rodziny.', obraz: '/okolica-kopalnia.jpg' }
+  { nazwa: 'Kopalnia Złota w Złotym Stoku (33 km)', opis: 'Zabytkowa kopalnia z podziemną trasą turystyczną, muzeum i wodospadem – świetna atrakcja dla całej rodziny.', obraz: '/okolica-kopalnia.jpg' }
 ];
 
 export default function AtrakcjeCarousel() {
   const [startIndex, setStartIndex] = useState(0);
   const [cardsPerPage, setCardsPerPage] = useState(3);
 
-  // 📱 Ustaw ilość kart w zależności od szerokości okna
   useEffect(() => {
     const handleResize = () => {
       setCardsPerPage(window.innerWidth < 768 ? 1 : 3);
     };
 
-    handleResize(); // początkowe ustawienie
+    handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -48,7 +48,7 @@ export default function AtrakcjeCarousel() {
   return (
     <section className="py-24 bg-[#3f4a3c] text-[#fdfbf7]">
       <div className="max-w-6xl mx-auto px-6 text-center">
-        <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: '"Playfair Display", serif', color: '#fdfbf7' }}>
+        <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: '"Playfair Display", serif',color: '#fdfbf7' }}>
           Atrakcje <span className="italic font-normal">w pobliżu</span>
         </h2>
         <p className="text-center text-base sm:text-lg max-w-3xl mx-auto mb-16 text-[#eae7df]">
@@ -61,7 +61,13 @@ export default function AtrakcjeCarousel() {
             <FaChevronLeft />
           </button>
 
-          <div className={`grid grid-cols-1 md:grid-cols-${cardsPerPage} gap-6 w-full transition-all duration-300`}>
+          <div
+            className={clsx(
+              'grid gap-6 w-full transition-all duration-300',
+              cardsPerPage === 1 && 'grid-cols-1',
+              cardsPerPage === 3 && 'md:grid-cols-3'
+            )}
+          >
             {widoczne.map((a, i) => (
               <div key={i} className="bg-white text-[#3f4a3c] p-5 rounded-xl shadow-xl hover:scale-[1.02] transition-all duration-300">
                 <div className="aspect-video relative rounded-lg overflow-hidden mb-4">
