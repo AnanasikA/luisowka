@@ -55,6 +55,7 @@ export default function MomentsSection() {
             src="/luisowka-zielony-domek.webp"
             alt="Luisówka w lesie"
             fill
+            quality={80}
             className="object-cover"
           />
         </motion.div>

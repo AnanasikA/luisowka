@@ -6,9 +6,9 @@ import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import clsx from 'clsx';
 
 const obrazy = [
-  '/1.png',
-  '/2.png',
-  '/3.png',
+  '/1.webp',
+  '/2.webp',
+  '/3.webp',
   '/4.webp',
   '/5.webp',
   '/6.webp',
@@ -69,6 +69,7 @@ export default function Galeria() {
             src={obrazy[index]}
             alt={`Zdjęcie ${index + 1}`}
             fill
+            quality={80}
             className={clsx(
               'object-contain transition-opacity duration-500 ease-in-out',
               fade ? 'opacity-100' : 'opacity-0'

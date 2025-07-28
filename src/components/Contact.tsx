@@ -40,7 +40,7 @@ export default function Kontakt() {
     <section id="kontakt" className="relative py-24 px-6 text-[#fdfbf7] overflow-hidden">
       {/* 📸 Tło obrazek */}
       <Image
-        src="/kontakt-bg.jpg"
+        src="/kontakt-bg.webp"
         alt="Tło kontaktowe"
         fill
         priority

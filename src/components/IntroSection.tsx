@@ -12,6 +12,7 @@ export default function IntroSection() {
           <Image
             src="/domek.webp"
             alt="Domek Luisówka w górach"
+            quality={80}
             width={600}
             height={400}
             className="rounded-xl shadow-lg object-cover w-full max-w-md h-auto"

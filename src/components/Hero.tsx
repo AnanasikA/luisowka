@@ -10,15 +10,19 @@ export default function Hero() {
     <section id="start" className="relative h-screen w-full overflow-hidden">
       {/* Wideo w tle */}
       <video
-        autoPlay
-        loop
-        muted
-        playsInline
-        className="absolute inset-0 w-full h-full object-cover z-0"
-      >
-        <source src="/hero-video.mp4" type="video/mp4" />
-        Twoja przeglądarka nie obsługuje wideo HTML5.
-      </video>
+      preload="auto"
+  autoPlay
+  loop
+  muted
+  playsInline
+  className="absolute inset-0 w-full h-full object-cover z-0"
+  poster="/hero-placeholder.webp"
+>
+  <source src="/hero-video.webm" type="video/webm" />
+  <source src="/hero-video.mp4" type="video/mp4" />
+  Twoja przeglądarka nie obsługuje wideo HTML5.
+</video>
+
 
       {/* Nakładka gradientowa */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent z-10" />

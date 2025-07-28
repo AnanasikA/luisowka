@@ -6,15 +6,15 @@ import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import clsx from 'clsx';
 
 const atrakcje = [
-  { nazwa: 'Wyciąg krzesełkowy Bolek (1,5 km)', opis: 'Idealny na szybkie wypady narciarskie – blisko i komfortowo.', obraz: '/okolica-bolek.jpg' },
-  { nazwa: 'Stacja narciarska Kamienica + lokalny browar', opis: 'Trasy zjazdowe i pyszne piwo w jednym miejscu – idealne po aktywnym dniu.', obraz: '/okolica-kamienica.jpg' },
-  { nazwa: 'Czarna Góra (7,3 km)', opis: 'Popularny ośrodek narciarski i letni z pięknymi widokami i atrakcjami.', obraz: '/okolica-czarnagora.jpg' },
-  { nazwa: 'Góra Śnieżnik (5,3 km)', opis: 'Jeden z najwyższych szczytów Masywu Śnieżnika z piękną trasą i panoramą.', obraz: '/okolica-snieznik.jpg' },
-  { nazwa: 'Wieża widokowa na Czernicy (5,6 km)', opis: 'Malowniczy punkt widokowy z panoramą na góry.', obraz: '/okolica-czernica.jpg' },
-  { nazwa: 'Jaskinia Niedźwiedzia (4,5 km)', opis: 'Jedna z najpiękniejszych jaskiń w Polsce – trasa turystyczna z przewodnikiem.', obraz: '/okolica-jaskinia.jpg' },
-  { nazwa: 'Sky Bridge 721 – Dolní Morava (11 km)', opis: 'Najdłuższy most wiszący na świecie – widoki, których się nie zapomina.', obraz: '/okolica-skybridge.jpg' },
-  { nazwa: 'Czechy: Kunčice, Branná, Kladské Sedlo', opis: 'Urokliwe czeskie miejscowości i górskie szlaki warte odkrycia.', obraz: '/okolica-czechy.jpg' },
-  { nazwa: 'Kopalnia Złota w Złotym Stoku (33 km)', opis: 'Zabytkowa kopalnia z podziemną trasą turystyczną, muzeum i wodospadem – świetna atrakcja dla całej rodziny.', obraz: '/okolica-kopalnia.jpg' }
+  { nazwa: 'Wyciąg krzesełkowy Bolek (1,5 km)', opis: 'Idealny na szybkie wypady narciarskie – blisko i komfortowo.', obraz: '/okolica-bolek.webp' },
+  { nazwa: 'Stacja narciarska Kamienica + lokalny browar', opis: 'Trasy zjazdowe i pyszne piwo w jednym miejscu – idealne po aktywnym dniu.', obraz: '/okolica-kamienica.webp' },
+  { nazwa: 'Czarna Góra (7,3 km)', opis: 'Popularny ośrodek narciarski i letni z pięknymi widokami i atrakcjami.', obraz: '/okolica-czarnagora.webp' },
+  { nazwa: 'Góra Śnieżnik (5,3 km)', opis: 'Jeden z najwyższych szczytów Masywu Śnieżnika z piękną trasą i panoramą.', obraz: '/okolica-snieznik.webp' },
+  { nazwa: 'Wieża widokowa na Czernicy (5,6 km)', opis: 'Malowniczy punkt widokowy z panoramą na góry.', obraz: '/okolica-czernica.webp' },
+  { nazwa: 'Jaskinia Niedźwiedzia (4,5 km)', opis: 'Jedna z najpiękniejszych jaskiń w Polsce – trasa turystyczna z przewodnikiem.', obraz: '/okolica-jaskinia.webp' },
+  { nazwa: 'Sky Bridge 721 – Dolní Morava (11 km)', opis: 'Najdłuższy most wiszący na świecie – widoki, których się nie zapomina.', obraz: '/okolica-skybridge.webp' },
+  { nazwa: 'Czechy: Kunčice, Branná, Kladské Sedlo', opis: 'Urokliwe czeskie miejscowości i górskie szlaki warte odkrycia.', obraz: '/okolica-czechy.webp' },
+  { nazwa: 'Kopalnia Złota w Złotym Stoku (33 km)', opis: 'Zabytkowa kopalnia z podziemną trasą turystyczną, muzeum i wodospadem – świetna atrakcja dla całej rodziny.', obraz: '/okolica-kopalnia.webp' }
 ];
 
 export default function AtrakcjeCarousel() {
@@ -71,7 +71,7 @@ export default function AtrakcjeCarousel() {
             {widoczne.map((a, i) => (
               <div key={i} className="bg-white text-[#3f4a3c] p-5 rounded-xl shadow-xl hover:scale-[1.02] transition-all duration-300">
                 <div className="aspect-video relative rounded-lg overflow-hidden mb-4">
-                  <Image src={a.obraz} alt={a.nazwa} fill className="object-cover" />
+                  <Image src={a.obraz} alt={a.nazwa} fill className="object-cover" quality={80} />
                 </div>
                 <h3 className="text-lg font-semibold mb-2" style={{ fontFamily: '"Playfair Display", serif' }}>
                   {a.nazwa}
