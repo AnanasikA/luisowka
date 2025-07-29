@@ -82,7 +82,7 @@ export default function RezerwacjaKalendarz() {
         'Zakres dat',
         `${start.toLocaleDateString('pl-PL')} – ${end.toLocaleDateString('pl-PL')}`
       );
-
+      formData.append('_subject', 'Nowa rezerwacja z formularza Luisówka');
       try {
         await addDoc(collection(db, 'rezerwacje'), {
   name: formData.get('Imię i nazwisko'),
