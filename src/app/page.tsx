@@ -5,6 +5,7 @@ import Udogodnienia from '@/components/Udogodnienia';
 import Atrakcje from '@/components/Atrakcje';
 import JakDojechac from '@/components/JakDojechac';
 import MomentSection from '@/components/MomentsSection';
+import Cennik from '@/components/Cennik';
 import Rezerwacja from '@/components/RezerwacjaKalendarz';
 import Contact from '@/components/Contact';
 import Stopka from '@/components/Stopka';
@@ -19,6 +20,7 @@ export default function Home() {
       <Udogodnienia />
       <Atrakcje /> 
       <JakDojechac /> 
+      <Cennik /> 
       <Rezerwacja />
       <Contact />
       <Stopka /> 

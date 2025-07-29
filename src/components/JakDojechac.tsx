@@ -9,6 +9,7 @@ export default function JakDojechac() {
       <div className="max-w-6xl mx-auto">
         {/* 🔝 Nagłówek */}
         <h2
+          id="lokalizacja"
           className="text-4xl md:text-5xl font-bold mb-12 text-center"
           style={{ fontFamily: '"Playfair Display", serif', color: '#fdfbf7' }}
         >

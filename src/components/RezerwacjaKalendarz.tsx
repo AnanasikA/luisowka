@@ -155,16 +155,13 @@ export default function RezerwacjaKalendarz() {
                   Wybrany termin: {selectedRange[0].toLocaleDateString('pl-PL')} – {selectedRange[1].toLocaleDateString('pl-PL')}
                 </p>
                 <form onSubmit={handleSubmit} className="space-y-4 text-left">
-  <input type="text" name="Imię i nazwisko" placeholder="Imię i nazwisko" required className="w-full border border-gray-300 p-2 rounded" />
-  <input type="email" name="E-mail" placeholder="E-mail" required className="w-full border border-gray-300 p-2 rounded" />
-  <input type="tel" name="Telefon" placeholder="Telefon" required className="w-full border border-gray-300 p-2 rounded" />
-  <input type="number" name="Liczba osób" placeholder="Liczba osób" min="1" required className="w-full border border-gray-300 p-2 rounded" />
-  <textarea name="Uwagi" placeholder="Dodatkowe uwagi (opcjonalnie)" rows={3} className="w-full border border-gray-300 p-2 rounded" />
-  <button type="submit" disabled={loading} className="w-full bg-[#3f4a3c] text-[#fdfbf7] py-2 px-4 rounded hover:bg-[#2e382c] transition">
-    {loading ? 'Wysyłanie...' : 'Zarezerwuj termin'}
-  </button>
-</form>
-
+                  <input type="text" name="Imię i nazwisko" placeholder="Imię i nazwisko" required className="w-full border border-gray-300 p-2 rounded" />
+                  <input type="email" name="E-mail" placeholder="E-mail" required className="w-full border border-gray-300 p-2 rounded" />
+                  <input type="tel" name="Telefon" placeholder="Telefon" required className="w-full border border-gray-300 p-2 rounded" />
+                  <button type="submit" disabled={loading} className="w-full bg-[#3f4a3c] text-[#fdfbf7] py-2 px-4 rounded hover:bg-[#2e382c] transition">
+                    {loading ? 'Wysyłanie...' : 'Zarezerwuj termin'}
+                  </button>
+                </form>
               </>
             ) : (
               <div className="h-full flex flex-col justify-center items-center">

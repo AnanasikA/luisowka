@@ -8,26 +8,25 @@ export default function Naglowek() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const navItems = [
-    { label: 'Start', id: 'start', path: '/start' },
-    { label: 'Galeria', id: 'galeria', path: '/galeria' },
-    { label: 'Lokalizacja', id: 'lokalizacja', path: '/lokalizacja' },
-    { label: 'Kontakt', id: 'kontakt', path: '/kontakt' },
+    { label: 'Start', id: 'start' },
+    { label: 'Galeria', id: 'galeria' },
+    { label: 'Lokalizacja', id: 'lokalizacja' },
+    { label: 'Cennik', id: 'cennik' },
+    { label: 'Kontakt', id: 'kontakt' },
   ];
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : 'auto';
   }, [menuOpen]);
 
-  const handleScrollWithPath = (targetId: string, newPath: string) => {
-    // Scroll do elementu
+  const handleScrollWithPath = (targetId: string) => {
     const el = document.getElementById(targetId);
     if (el) {
       el.scrollIntoView({ behavior: 'smooth' });
     }
 
-    // Zmień widoczny URL bez przeładowania strony
-    window.history.pushState(null, '', newPath);
-
+    // Ustawia URL bez przeładowania strony
+    window.history.pushState(null, '', `/#${targetId}`);
     setMenuOpen(false);
   };
 
@@ -49,7 +48,7 @@ export default function Naglowek() {
             {navItems.map((item) => (
               <button
                 key={item.label}
-                onClick={() => handleScrollWithPath(item.id, item.path)}
+                onClick={() => handleScrollWithPath(item.id)}
                 className="relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:bg-[#fdfbf7] after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100"
               >
                 {item.label}
@@ -59,7 +58,7 @@ export default function Naglowek() {
 
           <div className="hidden md:flex items-center gap-4">
             <button
-              onClick={() => handleScrollWithPath('rezerwacja', '/rezerwacja')}
+              onClick={() => handleScrollWithPath('rezerwacja')}
               className="bg-[#fdfbf7] text-[#3f4a3c] px-5 py-2 rounded-full text-sm font-semibold hover:bg-[#eae7df] transition"
             >
               Zarezerwuj
@@ -75,7 +74,7 @@ export default function Naglowek() {
         </div>
       </header>
 
-      {/* Drawer menu */}
+      {/* Drawer menu mobilny */}
       <div className={`mobile-drawer ${menuOpen ? 'open' : ''}`}>
         <div className="drawer-header">
           <Link href="/" onClick={() => setMenuOpen(false)}>
@@ -94,14 +93,14 @@ export default function Naglowek() {
           {navItems.map((item) => (
             <button
               key={item.label}
-              onClick={() => handleScrollWithPath(item.id, item.path)}
+              onClick={() => handleScrollWithPath(item.id)}
               className="drawer-link"
             >
               {item.label}
             </button>
           ))}
           <button
-            onClick={() => handleScrollWithPath('rezerwacja', '/rezerwacja')}
+            onClick={() => handleScrollWithPath('rezerwacja')}
             className="cta"
           >
             Zarezerwuj
