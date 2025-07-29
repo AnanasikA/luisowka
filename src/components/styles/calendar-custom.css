@@ -1,0 +1,75 @@
+/* Podstawowy styl kalendarza */
+.react-calendar {
+  width: 100%;
+  background-color: #fdfbf7;
+  color: #3f4a3c;
+  border: none;
+  border-radius: 1rem;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 16px;
+  padding: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Nawigacja */
+.react-calendar__navigation {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.react-calendar__navigation button {
+  background: none;
+  color: #3f4a3c;
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.react-calendar__navigation button:hover {
+  background-color: #eae7df;
+}
+
+/* Dni tygodnia */
+.react-calendar__month-view__weekdays {
+  text-align: center;
+  font-weight: 600;
+  color: #2e382c;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  padding-bottom: 0.5rem;
+}
+
+/* Pojedynczy dzień */
+.react-calendar__tile {
+  padding: 0.75rem 0.5rem;
+  background: none;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.react-calendar__tile:enabled:hover {
+  background-color: #eae7df;
+}
+
+/* Zakres wybrany */
+.react-calendar__tile--rangeStart,
+.react-calendar__tile--rangeEnd {
+  background-color: #3f4a3c !important;
+  color: #fdfbf7 !important;
+}
+
+.react-calendar__tile--range {
+  background-color: #b9c5af;
+  color: #3f4a3c;
+}
+
+/* Dni niedostępne (przeszłe lub zarezerwowane) */
+.react-calendar__tile:disabled {
+  background-color: #f0efea;
+  color: #aaa;
+  text-decoration: line-through;
+  cursor: not-allowed;
+}

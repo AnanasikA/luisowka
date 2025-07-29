@@ -1,10 +1,18 @@
 'use client';
 
 export default function Hero() {
-  const scrollToKontakt = () => {
-    const kontakt = document.getElementById('kontakt');
-    if (kontakt) kontakt.scrollIntoView({ behavior: 'smooth' });
+    const handleScrollWithPath = (targetId: string, newPath: string) => {
+    // Scroll do elementu
+    const el = document.getElementById(targetId);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Zmień widoczny URL bez przeładowania strony
+    window.history.pushState(null, '', newPath);
+
   };
+
 
   return (
     <section id="start" className="relative h-screen w-full overflow-hidden">
@@ -53,7 +61,7 @@ export default function Hero() {
         </p>
 
         <button
-          onClick={scrollToKontakt}
+          onClick={() => handleScrollWithPath('rezerwacja', '/rezerwacja')}
           className="px-5 sm:px-6 py-3 font-semibold rounded-full transition text-sm sm:text-base opacity-0 fade-zoom-delayed"
           style={{
             backgroundColor: '#657157',

@@ -59,7 +59,7 @@ export default function Naglowek() {
 
           <div className="hidden md:flex items-center gap-4">
             <button
-              onClick={() => handleScrollWithPath('kontakt', '/kontakt')}
+              onClick={() => handleScrollWithPath('rezerwacja', '/rezerwacja')}
               className="bg-[#fdfbf7] text-[#3f4a3c] px-5 py-2 rounded-full text-sm font-semibold hover:bg-[#eae7df] transition"
             >
               Zarezerwuj
@@ -101,7 +101,7 @@ export default function Naglowek() {
             </button>
           ))}
           <button
-            onClick={() => handleScrollWithPath('kontakt', '/kontakt')}
+            onClick={() => handleScrollWithPath('rezerwacja', '/rezerwacja')}
             className="cta"
           >
             Zarezerwuj

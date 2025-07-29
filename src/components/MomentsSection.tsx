@@ -3,6 +3,19 @@
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 
+  const handleScrollWithPath = (targetId: string, newPath: string) => {
+    // Scroll do elementu
+    const el = document.getElementById(targetId);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Zmień widoczny URL bez przeładowania strony
+    window.history.pushState(null, '', newPath);
+
+  };
+
+
 export default function MomentsSection() {
   return (
     <section className="bg-[#fdfbf7] text-[#3f4a3c] px-6 py-24">
@@ -33,10 +46,7 @@ export default function MomentsSection() {
           <motion.button
             whileHover={{ scale: 1.03 }}
             transition={{ type: 'spring', stiffness: 200, damping: 12 }}
-            onClick={() => {
-              const kontakt = document.getElementById('kontakt');
-              if (kontakt) kontakt.scrollIntoView({ behavior: 'smooth' });
-            }}
+            onClick={() => handleScrollWithPath('rezerwacja', '/rezerwacja')}
             className="px-6 py-3 rounded-full bg-[#657157] text-[#fdfbf7] font-semibold transition hover:bg-[#4c5b3c]"
           >
             Zarezerwuj pobyt →
