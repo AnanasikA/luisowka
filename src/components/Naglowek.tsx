@@ -6,42 +6,40 @@ import { FiMenu, FiX } from 'react-icons/fi';
 
 export default function Naglowek() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
-  const navItems = [
-    { label: 'Start', id: 'start' },
-    { label: 'Galeria', id: 'galeria' },
-    { label: 'Lokalizacja', id: 'lokalizacja' },
-    { label: 'Cennik', id: 'cennik' },
-    { label: 'Kontakt', id: 'kontakt' },
-  ];
+ const navItems = [
+  { label: 'Start', id: 'start' },
+  { label: 'Galeria', id: 'galeria' },
+  { label: 'Lokalizacja', id: 'lokalizacja' },
+  { label: 'Cennik', id: 'cennik' },
+  { label: 'Rezerwacja', id: 'rezerwacja' }, // ← dodane
+  { label: 'Kontakt', id: 'kontakt' },
+];
+
 
   useEffect(() => {
-    document.body.style.overflow = menuOpen ? 'hidden' : 'auto';
-  }, [menuOpen]);
+    document.body.style.overflow = menuOpen || showModal ? 'hidden' : 'auto';
+  }, [menuOpen, showModal]);
 
   const handleScrollWithPath = (targetId: string) => {
     const el = document.getElementById(targetId);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
-
-    // Ustawia URL bez przeładowania strony
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
     window.history.pushState(null, '', `/#${targetId}`);
     setMenuOpen(false);
   };
 
   return (
     <>
+      {/* 🟢 Główna nawigacja */}
       <header
         className={`fixed top-6 left-1/2 transform -translate-x-1/2 z-50 w-[95%] md:w-[90%] lg:w-[80%] bg-[#3f4a3c]/90 text-[#fdfbf7] rounded-full shadow-md px-6 py-3 backdrop-blur-md transition-opacity duration-300 ${
           menuOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'
-        }`}
+        } animate-fade-down`}
       >
         <div className="flex justify-between items-center w-full">
           <Link href="/">
-            <span className="text-[#fdfbf7] font-serif text-xl font-bold tracking-wide">
-              Luisówka
-            </span>
+            <span className="text-[#fdfbf7] font-serif text-xl font-bold tracking-wide">Luisówka</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-6 font-medium">
@@ -58,58 +56,99 @@ export default function Naglowek() {
 
           <div className="hidden md:flex items-center gap-4">
             <button
-              onClick={() => handleScrollWithPath('rezerwacja')}
+              onClick={() => setShowModal(true)}
               className="bg-[#fdfbf7] text-[#3f4a3c] px-5 py-2 rounded-full text-sm font-semibold hover:bg-[#eae7df] transition"
             >
-              Zarezerwuj
+              Zapytaj o dostępność
             </button>
           </div>
 
-          <button
-            className="md:hidden text-[#fdfbf7] text-2xl"
-            onClick={() => setMenuOpen(true)}
-          >
+          <button className="md:hidden text-[#fdfbf7] text-2xl" onClick={() => setMenuOpen(true)}>
             <FiMenu />
           </button>
         </div>
       </header>
 
-      {/* Drawer menu mobilny */}
-      <div className={`mobile-drawer ${menuOpen ? 'open' : ''}`}>
+      {/* 🔵 Menu mobilne */}
+      <div className={`mobile-drawer ${menuOpen ? 'open drawer-animated' : ''}`}>
         <div className="drawer-header">
           <Link href="/" onClick={() => setMenuOpen(false)}>
             <span className="drawer-logo">Luisówka</span>
           </Link>
-          <button
-            className="drawer-close"
-            onClick={() => setMenuOpen(false)}
-            aria-label="Zamknij menu"
-          >
+          <button className="drawer-close" onClick={() => setMenuOpen(false)} aria-label="Zamknij menu">
             <FiX />
           </button>
         </div>
 
         <nav className="drawer-nav">
           {navItems.map((item) => (
-            <button
-              key={item.label}
-              onClick={() => handleScrollWithPath(item.id)}
-              className="drawer-link"
-            >
+            <button key={item.label} onClick={() => handleScrollWithPath(item.id)} className="drawer-link">
               {item.label}
             </button>
           ))}
-          <button
-            onClick={() => handleScrollWithPath('rezerwacja')}
-            className="cta"
-          >
-            Zarezerwuj
+          <button onClick={() => setShowModal(true)} className="cta">
+            Zapytaj o dostępność
           </button>
         </nav>
       </div>
 
-      {menuOpen && (
-        <div className="drawer-backdrop" onClick={() => setMenuOpen(false)} />
+      {menuOpen && <div className="drawer-backdrop" onClick={() => setMenuOpen(false)} />}
+
+      {/* 🔴 Modal z formularzem */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center px-4">
+          <div className="bg-white text-[#3f4a3c] rounded-xl p-6 w-full max-w-md relative animate-scale-fade-in">
+            <button
+              onClick={() => setShowModal(false)}
+              className="absolute top-4 right-4 text-2xl text-[#3f4a3c] hover:text-red-600"
+              aria-label="Zamknij"
+            >
+              &times;
+            </button>
+            <h3 className="text-xl font-bold mb-4">Wyślij zapytanie o dostępność</h3>
+            <form
+              action="https://formsubmit.co/kontakt@luisowka.com"
+              method="POST"
+              className="space-y-4"
+              onSubmit={() => setTimeout(() => setShowModal(false), 2000)}
+            >
+              <input type="hidden" name="_subject" value="Zapytanie o dostępność – Luisówka" />
+              <input
+                type="text"
+                name="Imię i nazwisko"
+                placeholder="Imię i nazwisko"
+                required
+                className="w-full border border-gray-300 p-2 rounded"
+              />
+              <input
+                type="email"
+                name="E-mail"
+                placeholder="E-mail"
+                required
+                className="w-full border border-gray-300 p-2 rounded"
+              />
+              <input
+                type="tel"
+                name="Telefon"
+                placeholder="Telefon"
+                required
+                className="w-full border border-gray-300 p-2 rounded"
+              />
+              <textarea
+                name="Wiadomość"
+                placeholder="Termin pobytu, liczba osób, pytania..."
+                rows={3}
+                className="w-full border border-gray-300 p-2 rounded"
+              />
+              <button
+                type="submit"
+                className="w-full bg-[#3f4a3c] text-[#fdfbf7] py-2 px-4 rounded hover:bg-[#2e382c] transition"
+              >
+                Wyślij zapytanie
+              </button>
+            </form>
+          </div>
+        </div>
       )}
     </>
   );

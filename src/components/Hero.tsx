@@ -26,8 +26,9 @@ export default function Hero() {
   className="absolute inset-0 w-full h-full object-cover z-0"
   poster="/hero-placeholder.webp"
 >
-  <source src="/hero-video.webm" type="video/webm" />
-  <source src="/hero-video.mp4" type="video/mp4" />
+  
+  <source src="/hero.mp4" type="video/mp4" />
+
   Twoja przeglądarka nie obsługuje wideo HTML5.
 </video>
 
@@ -60,17 +61,19 @@ export default function Hero() {
           Przytulny domek do wynajęcia w sercu Masywu Śnieżnika. Zrelaksuj się w ciszy, z widokiem na lasy i góry. Jacuzzi, kominek i natura – na wyłączność.
         </p>
 
-        <button
-          onClick={() => handleScrollWithPath('rezerwacja', '/rezerwacja')}
-          className="px-5 sm:px-6 py-3 font-semibold rounded-full transition text-sm sm:text-base opacity-0 fade-zoom-delayed"
-          style={{
-            backgroundColor: '#657157',
-            color: '#fdfbf7',
-            fontFamily: '"Open Sans", sans-serif',
-          }}
-        >
-          Zarezerwuj pobyt
-        </button>
+  <button
+  onClick={() => handleScrollWithPath('rezerwacja', '/rezerwacja')}
+  className="px-5 sm:px-6 py-3 font-semibold rounded-full transition text-sm sm:text-base opacity-0 fade-zoom-delayed"
+  style={{
+    backgroundColor: '#657157',
+    color: '#fdfbf7',
+    fontFamily: '"Open Sans", sans-serif',
+  }}
+>
+  Zarezerwuj pobyt
+</button>
+
+
       </div>
     </section>
   );

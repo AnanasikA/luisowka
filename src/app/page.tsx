@@ -7,6 +7,7 @@ import JakDojechac from '@/components/JakDojechac';
 import MomentSection from '@/components/MomentsSection';
 import Cennik from '@/components/Cennik';
 import Rezerwacja from '@/components/RezerwacjaKalendarz';
+// import IntroSection from '@/components/IntroSection';
 import Contact from '@/components/Contact';
 import Stopka from '@/components/Stopka';
 
@@ -22,6 +23,7 @@ export default function Home() {
       <JakDojechac /> 
       <Cennik /> 
       <Rezerwacja />
+      {/*<IntroSection />*/}
       <Contact />
       <Stopka /> 
     </main>

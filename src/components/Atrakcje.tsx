@@ -4,8 +4,19 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import clsx from 'clsx';
+import { motion } from 'framer-motion';
 
 const atrakcje = [
+    {
+    nazwa: 'Twierdza Kłodzko (29 km)',
+    opis: 'Zabytkowa fortyfikacja z podziemiami i tarasem widokowym – fascynująca podróż w przeszłość.',
+    obraz: '/okolica-twierdza.webp',
+  },
+  {
+    nazwa: 'Lądek-Zdrój – uzdrowisko (21 km)',
+    opis: 'Jedno z najstarszych uzdrowisk w Europie z piękną architekturą i leczniczymi wodami.',
+    obraz: '/okolica-ladek.webp',
+  },
   { nazwa: 'Wyciąg krzesełkowy Bolek (1,5 km)', opis: 'Idealny na szybkie wypady narciarskie – blisko i komfortowo.', obraz: '/okolica-bolek.webp' },
   { nazwa: 'Stacja narciarska Kamienica + lokalny browar', opis: 'Trasy zjazdowe i pyszne piwo w jednym miejscu – idealne po aktywnym dniu.', obraz: '/okolica-kamienica.webp' },
   { nazwa: 'Czarna Góra (7,3 km)', opis: 'Popularny ośrodek narciarski i letni z pięknymi widokami i atrakcjami.', obraz: '/okolica-czarnagora.webp' },
@@ -48,13 +59,20 @@ export default function AtrakcjeCarousel() {
   return (
     <section className="py-24 bg-[#3f4a3c] text-[#fdfbf7]">
       <div className="max-w-6xl mx-auto px-6 text-center">
-        <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: '"Playfair Display", serif',color: '#fdfbf7' }}>
-          Atrakcje <span className="italic font-normal">w pobliżu</span>
-        </h2>
-        <p className="text-center text-base sm:text-lg max-w-3xl mx-auto mb-16 text-[#eae7df]">
-          Luisówka położona jest w malowniczej Nowej Morawie, u stóp Masywu Śnieżnika.
-          To idealna baza wypadowa do górskich wędrówek i odkrywania skarbów Dolnego Śląska.
-        </p>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, ease: 'easeOut' }}
+          viewport={{ once: true }}
+        >
+          <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: '"Playfair Display", serif',color: '#fdfbf7' }}>
+            Atrakcje <span className="italic font-normal">w pobliżu</span>
+          </h2>
+          <p className="text-center text-base sm:text-lg max-w-3xl mx-auto mb-16 text-[#eae7df]">
+            Luisówka położona jest w malowniczej Nowej Morawie, u stóp Masywu Śnieżnika.
+            To idealna baza wypadowa do górskich wędrówek i odkrywania skarbów Dolnego Śląska.
+          </p>
+        </motion.div>
 
         <div className="flex items-center justify-center gap-4 mb-8">
           <button onClick={prev} className="text-2xl hover:text-white transition">
@@ -69,7 +87,14 @@ export default function AtrakcjeCarousel() {
             )}
           >
             {widoczne.map((a, i) => (
-              <div key={i} className="bg-white text-[#3f4a3c] p-5 rounded-xl shadow-xl hover:scale-[1.02] transition-all duration-300">
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, scale: 0.98, y: 10 }}
+                whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: i * 0.1, ease: 'easeOut' }}
+                viewport={{ once: true }}
+                className="bg-white text-[#3f4a3c] p-5 rounded-xl shadow-xl hover:scale-[1.02] transition-all duration-300"
+              >
                 <div className="aspect-video relative rounded-lg overflow-hidden mb-4">
                   <Image src={a.obraz} alt={a.nazwa} fill className="object-cover" quality={80} />
                 </div>
@@ -77,7 +102,7 @@ export default function AtrakcjeCarousel() {
                   {a.nazwa}
                 </h3>
                 <p className="text-sm">{a.opis}</p>
-              </div>
+              </motion.div>
             ))}
           </div>
 

@@ -11,9 +11,10 @@ import {
   GiFireplace,
   GiSofa,
   GiWashingMachine,
-  GiMountains
+  GiMountains,
+  GiKitchenKnives
 } from 'react-icons/gi';
-import { GiKitchenKnives } from 'react-icons/gi';
+import { motion } from 'framer-motion';
 
 const udogodnienia = [
   { ikona: <FaCar />, nazwa: 'Bezpłatny parking' },
@@ -44,16 +45,20 @@ export default function Udogodnienia() {
         </h2>
 
         <p className="text-center text-base sm:text-lg max-w-3xl mx-auto mb-12 text-[#3f4a3c]">
-  Cały obiekt tylko dla Ciebie – 74 m² komfortowej przestrzeni z tarasem, w pełni wyposażoną kuchnią, prywatną łazienką i klimatyzacją. Na miejscu dostępne są: bezpłatny parking, szybkie Wi‑Fi, telewizor, pralka oraz wiele udogodnień, które sprawią, że poczujesz się jak w domu.
-</p>
-
+          Cały obiekt tylko dla Ciebie – 74 m² komfortowej przestrzeni z tarasem, w pełni wyposażoną kuchnią,
+          prywatną łazienką i klimatyzacją. Na miejscu dostępne są: bezpłatny parking, szybkie Wi‑Fi, telewizor,
+          pralka oraz wiele udogodnień, które sprawią, że poczujesz się jak w domu.
+        </p>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 sm:gap-10 text-center">
           {udogodnienia.map((item, index) => (
-            <div
+            <motion.div
               key={index}
-              className="flex flex-col items-center space-y-3 sm:space-y-4 animate-fadeInUp"
-              style={{ animationDelay: `${index * 0.1}s`, animationFillMode: 'both' }}
+              className="flex flex-col items-center space-y-3 sm:space-y-4"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: index * 0.1, ease: 'easeOut' }}
+              viewport={{ once: true }}
             >
               <div
                 className="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center rounded-full text-2xl sm:text-3xl transition-transform duration-300 hover:scale-110"
@@ -67,7 +72,7 @@ export default function Udogodnienia() {
               <span className="text-xs sm:text-sm font-medium text-[#3f4a3c]">
                 {item.nazwa}
               </span>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
