@@ -43,10 +43,6 @@ export default function Cennik() {
             <span>od 550 zł</span>
           </div>
           <div className="flex justify-between border-b pb-2">
-            <span>Dłuższy pobyt / więcej osób</span>
-            <span>zniżki indywidualne</span>
-          </div>
-          <div className="flex justify-between border-b pb-2">
             <span>Jacuzzi (opcja dodatkowa)</span>
             <span>300 zł (jednorazowo)</span>
           </div>

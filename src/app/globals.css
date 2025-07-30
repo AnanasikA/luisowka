@@ -31,8 +31,30 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   color: var(--foreground);
 }
+/* Wyświetlanie w zależności od szerokości ekranu */
+.desktop-nav {
+  display: none;
+}
 
-/* 📱 Drawer mobilny */
+.mobile-nav {
+  display: flex;
+}
+
+@media (min-width: 1050px) {
+  .desktop-nav {
+    display: flex !important;
+  }
+
+  .mobile-nav {
+    display: none !important;
+  }
+
+  .mobile-drawer {
+    display: none !important;
+  }
+}
+
+/* Drawer stylizacja */
 .mobile-drawer {
   position: fixed;
   top: 0;
@@ -48,7 +70,6 @@ h1, h2, h3, h4, h5, h6 {
   flex-direction: column;
   gap: 1.5rem;
   transition: right 0.3s ease-in-out;
-  backdrop-filter: blur(8px);
 }
 
 .mobile-drawer.open {
@@ -59,20 +80,19 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
 }
 
 .drawer-logo {
+  font-family: 'Playfair Display', serif;
   font-size: 1.5rem;
   font-weight: bold;
-  font-family: var(--font-heading);
   color: #fdfbf7;
 }
 
 .drawer-close {
+  font-size: 1.8rem;
   background: none;
   border: none;
-  font-size: 1.75rem;
   color: #fdfbf7;
   cursor: pointer;
 }
@@ -80,51 +100,63 @@ h1, h2, h3, h4, h5, h6 {
 .drawer-nav {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.25rem;
+  margin-top: 2rem;
 }
 
 .drawer-link {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 500;
-  color: #fdfbf7;
   background: none;
   border: none;
+  color: #fdfbf7;
   text-align: left;
-  padding: 0.5rem 0;
   cursor: pointer;
-  transition: color 0.2s ease-in-out;
 }
 
-.drawer-link:hover {
-  color: #eae7df;
+.drawer-link:hover,
+.cta:hover {
+  opacity: 0.85;
 }
 
 .cta {
   background-color: #fdfbf7;
   color: #3f4a3c;
-  padding: 0.6rem 1.4rem;
+  padding: 0.6rem 1.2rem;
   border-radius: 9999px;
   font-weight: 600;
-  margin-top: 1.5rem;
-  display: inline-block;
-  transition: background 0.3s ease;
-  border: none;
-  text-align: center;
-}
-
-.cta:hover {
-  background-color: #eae7df;
+  margin-top: 1rem;
 }
 
 .drawer-backdrop {
   position: fixed;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  background-color: rgba(0, 0, 0, 0.4);
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
   z-index: 50;
 }
+/* Lewy wjazd tekstu */
+.slide-in-left {
+  transform: translateX(-30px);
+  opacity: 0;
+  transition: transform 1s ease-out, opacity 1s ease-out;
+}
+.slide-in-left.show {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+/* Prawy wjazd obrazka */
+.slide-in-right {
+  transform: translateX(30px);
+  opacity: 0;
+  transition: transform 1s ease-out, opacity 1s ease-out;
+}
+.slide-in-right.show {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+
 
 /* 🌄 Animacje wejścia */
 @keyframes fadeUp {

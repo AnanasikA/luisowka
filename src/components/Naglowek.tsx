@@ -8,15 +8,13 @@ export default function Naglowek() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
- const navItems = [
-  { label: 'Start', id: 'start' },
-  { label: 'Galeria', id: 'galeria' },
-  { label: 'Lokalizacja', id: 'lokalizacja' },
-  { label: 'Cennik', id: 'cennik' },
-  { label: 'Rezerwacja', id: 'rezerwacja' }, // ← dodane
-  { label: 'Kontakt', id: 'kontakt' },
-];
-
+  const navItems = [
+    { label: 'Start', id: 'start' },
+    { label: 'Galeria', id: 'galeria' },
+    { label: 'Lokalizacja', id: 'lokalizacja' },
+    { label: 'Cennik', id: 'cennik' },
+    { label: 'Kontakt', id: 'kontakt' },
+  ];
 
   useEffect(() => {
     document.body.style.overflow = menuOpen || showModal ? 'hidden' : 'auto';
@@ -42,7 +40,8 @@ export default function Naglowek() {
             <span className="text-[#fdfbf7] font-serif text-xl font-bold tracking-wide">Luisówka</span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-6 font-medium">
+          {/* Nawigacja desktop */}
+          <nav className="desktop-nav flex items-center gap-6 font-medium">
             {navItems.map((item) => (
               <button
                 key={item.label}
@@ -54,16 +53,24 @@ export default function Naglowek() {
             ))}
           </nav>
 
-          <div className="hidden md:flex items-center gap-4">
+          {/* Przyciski desktop */}
+          <div className="desktop-nav flex items-center gap-4">
             <button
               onClick={() => setShowModal(true)}
               className="bg-[#fdfbf7] text-[#3f4a3c] px-5 py-2 rounded-full text-sm font-semibold hover:bg-[#eae7df] transition"
             >
               Zapytaj o dostępność
             </button>
+            <button
+              onClick={() => handleScrollWithPath('rezerwacja')}
+              className="bg-[#fdfbf7] text-[#3f4a3c] px-5 py-2 rounded-full text-sm font-semibold hover:bg-[#eae7df] transition"
+            >
+              Zarezerwuj
+            </button>
           </div>
 
-          <button className="md:hidden text-[#fdfbf7] text-2xl" onClick={() => setMenuOpen(true)}>
+          {/* Hamburger menu mobile */}
+          <button className="mobile-nav text-[#fdfbf7] text-2xl" onClick={() => setMenuOpen(true)}>
             <FiMenu />
           </button>
         </div>
@@ -86,7 +93,19 @@ export default function Naglowek() {
               {item.label}
             </button>
           ))}
-          <button onClick={() => setShowModal(true)} className="cta">
+          <button
+            onClick={() => handleScrollWithPath('rezerwacja')}
+            className="cta"
+          >
+            Zarezerwuj
+          </button>
+          <button
+            onClick={() => {
+              setShowModal(true);
+              setMenuOpen(false);
+            }}
+            className="cta"
+          >
             Zapytaj o dostępność
           </button>
         </nav>

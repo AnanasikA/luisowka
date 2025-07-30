@@ -17,6 +17,9 @@ module.exports = {
         sans: ['"Open Sans"', 'sans-serif'],
         serif: ['"Playfair Display"', 'serif'],
       },
+       screens: {
+        xl1050: { max: '1050px' },
+      },
     },
   },
   plugins: [],
