@@ -7,17 +7,17 @@ export default function FloatingCallButton() {
     <a
       href="tel:+48601675411"
       aria-label="Zadzwoń do nas"
-      className="fixed bottom-4 right-4 z-50 
+      className="fixed bottom-8 right-6 z-50 
                  bg-[#3f4a3c] hover:bg-[#2e382c] 
                  text-[#fdfbf7] 
-                 p-3 rounded-full shadow-md 
+                 p-4 rounded-full shadow-md 
                  transition-all duration-300 
                  active:scale-95 
                  md:hidden 
-                 w-12 h-12 flex items-center justify-center 
+                 w-16 h-16 flex items-center justify-center 
                  animate-soft-pulse"
     >
-      <FiPhone className="text-xl" />
+      <FiPhone className="text-2xl" />
     </a>
   );
 }
