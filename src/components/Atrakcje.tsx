@@ -7,26 +7,32 @@ import clsx from 'clsx';
 import { motion } from 'framer-motion';
 
 const atrakcje = [
-    {
-    nazwa: 'Twierdza Kłodzko (29 km)',
+   {
+    nazwa: 'Stronie Śląskie (7,2 km)',
+    opis: 'Najbliższe miasteczko z restauracjami, sklepami i atrakcjami – idealne na szybki wypad lub zakupy.',
+    obraz: '/okolica-stronie.webp',
+  },
+  {
+    
+    nazwa: 'Twierdza Kłodzko (39,9 km)',
     opis: 'Zabytkowa fortyfikacja z podziemiami i tarasem widokowym – fascynująca podróż w przeszłość.',
     obraz: '/okolica-twierdza.webp',
   },
   {
-    nazwa: 'Lądek-Zdrój – uzdrowisko (21 km)',
+    nazwa: 'Lądek-Zdrój – uzdrowisko (14,7 km)',
     opis: 'Jedno z najstarszych uzdrowisk w Europie z piękną architekturą i leczniczymi wodami.',
     obraz: '/okolica-ladek.webp',
   },
-  { nazwa: 'Wyciąg krzesełkowy Bolek (1,5 km)', opis: 'Idealny na szybkie wypady narciarskie – blisko i komfortowo.', obraz: '/okolica-bolek.webp' },
-  { nazwa: 'Stacja narciarska Kamienica + lokalny browar', opis: 'Trasy zjazdowe i pyszne piwo w jednym miejscu – idealne po aktywnym dniu.', obraz: '/okolica-kamienica.webp' },
-  { nazwa: 'Czarna Góra (7,3 km)', opis: 'Popularny ośrodek narciarski i letni z pięknymi widokami i atrakcjami.', obraz: '/okolica-czarnagora.webp' },
-  { nazwa: 'Góra Śnieżnik (5,3 km)', opis: 'Jeden z najwyższych szczytów Masywu Śnieżnika z piękną trasą i panoramą.', obraz: '/okolica-snieznik.webp' },
-  { nazwa: 'Wieża widokowa na Czernicy (5,6 km)', opis: 'Malowniczy punkt widokowy z panoramą na góry.', obraz: '/okolica-czernica.webp' },
-  { nazwa: 'Jaskinia Niedźwiedzia (4,5 km)', opis: 'Jedna z najpiękniejszych jaskiń w Polsce – trasa turystyczna z przewodnikiem.', obraz: '/okolica-jaskinia.webp' },
-  { nazwa: 'Sky Bridge 721 – Dolní Morava (11 km)', opis: 'Najdłuższy most wiszący na świecie – widoki, których się nie zapomina.', obraz: '/okolica-skybridge.webp' },
-  { nazwa: 'Czechy: Kunčice, Branná, Kladské Sedlo', opis: 'Urokliwe czeskie miejscowości i górskie szlaki warte odkrycia.', obraz: '/okolica-czechy.webp' },
-  { nazwa: 'Kopalnia Złota w Złotym Stoku (33 km)', opis: 'Zabytkowa kopalnia z podziemną trasą turystyczną, muzeum i wodospadem – świetna atrakcja dla całej rodziny.', obraz: '/okolica-kopalnia.webp' }
+  { nazwa: 'Wyciąg krzesełkowy Bolek (2,1 km)', opis: 'Idealny na szybkie wypady narciarskie – blisko i komfortowo.', obraz: '/okolica-bolek.webp' },
+  { nazwa: 'Stacja narciarska Kamienica + lokalny browar (3,9 km)', opis: 'Trasy zjazdowe i pyszne piwo w jednym miejscu – idealne po aktywnym dniu.', obraz: '/okolica-kamienica.webp' },
+  { nazwa: 'Góra Śnieżnik (14,9 km)', opis: 'Jeden z najwyższych szczytów Masywu Śnieżnika z piękną trasą i panoramą.', obraz: '/okolica-snieznik.webp' },
+  { nazwa: 'Wieża widokowa na Czernicy (15,9 km)', opis: 'Malowniczy punkt widokowy z panoramą na góry.', obraz: '/okolica-czernica.webp' },
+  { nazwa: 'Jaskinia Niedźwiedzia (14,5 km)', opis: 'Jedna z najpiękniejszych jaskiń w Polsce – trasa turystyczna z przewodnikiem.', obraz: '/okolica-jaskinia.webp' },
+  { nazwa: 'Sky Bridge 721 – Dolní Morava (41 km)', opis: 'Najdłuższy most wiszący na świecie – widoki, których się nie zapomina.', obraz: '/okolica-skybridge.webp' },
+  { nazwa: 'Kopalnia Złota w Złotym Stoku (35 km)', opis: 'Zabytkowa kopalnia z podziemną trasą turystyczną, muzeum i wodospadem – świetna atrakcja dla całej rodziny.', obraz: '/okolica-kopalnia.webp' },
+
 ];
+
 
 export default function AtrakcjeCarousel() {
   const [startIndex, setStartIndex] = useState(0);

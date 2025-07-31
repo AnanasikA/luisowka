@@ -6,7 +6,7 @@ import 'react-calendar/dist/Calendar.css';
 import './styles/calendar-custom.css';
 
 import { db } from '../lib/firebase';
-import { collection, getDocs, addDoc, Timestamp } from 'firebase/firestore';
+import { collection, getDocs, addDoc, Timestamp, query, where } from 'firebase/firestore';
 
 type ValuePiece = Date | null;
 type Value = [ValuePiece, ValuePiece] | ValuePiece;
@@ -66,16 +66,49 @@ export default function RezerwacjaKalendarz() {
     const form = e.currentTarget;
     const formData = new FormData(form);
 
+    if (formData.get('_honeypot')) {
+      setLoading(false);
+      return;
+    }
+
+    const name = formData.get('Imię i nazwisko')?.toString().trim();
+    const email = formData.get('E-mail')?.toString().trim();
+    const phone = formData.get('Telefon')?.toString().trim();
+
+    const nameRegex = /^[A-Za-zÀ-ÿżźćńółęąśŻŹĆĄŚĘŁÓŃ\s'-]{2,}$/;
+    if (!name || !nameRegex.test(name)) {
+      alert('Podaj poprawne imię i nazwisko.');
+      setLoading(false);
+      return;
+    }
+
     if (selectedRange) {
       const start = selectedRange[0];
       const end = selectedRange[1];
       formData.append('Zakres dat', `${start.toLocaleDateString('pl-PL')} – ${end.toLocaleDateString('pl-PL')}`);
 
       try {
+        // Sprawdzenie, czy osoba już zarezerwowała dziś
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const q = query(
+          collection(db, 'rezerwacje'),
+          where('name', '==', name),
+          where('createdAt', '>=', Timestamp.fromDate(today))
+        );
+
+        const existing = await getDocs(q);
+        if (!existing.empty) {
+          alert('Możesz zarezerwować tylko jeden termin dziennie.');
+          setLoading(false);
+          return;
+        }
+
         await addDoc(collection(db, 'rezerwacje'), {
-          name: formData.get('Imię i nazwisko'),
-          email: formData.get('E-mail'),
-          phone: formData.get('Telefon'),
+          name,
+          email,
+          phone,
           start: Timestamp.fromDate(start),
           end: Timestamp.fromDate(end),
           createdAt: Timestamp.now(),
@@ -100,7 +133,7 @@ export default function RezerwacjaKalendarz() {
     setLoading(false);
   };
 
-  return (
+   return (
     <section id="rezerwacja" className="bg-[#fdfbf7] py-24 px-6 text-[#3f4a3c]">
       <div className="max-w-6xl mx-auto text-center">
         <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: 'Playfair Display, serif' }}>
@@ -130,21 +163,22 @@ export default function RezerwacjaKalendarz() {
           <div className="w-full md:w-1/2 flex items-center justify-center px-6 py-8 bg-white border-t md:border-t-0 md:border-l border-gray-200">
             {submitted ? (
               <p className="text-[#3f4a3c] text-lg font-semibold">
-                 Rezerwacja została wysłana, ale nie jest jeszcze potwierdzona. Skontaktujemy się z Tobą mailowo lub telefonicznie, aby zatwierdzić dostępność i ostatecznie potwierdzić pobyt.
+                Rezerwacja została wysłana, ale nie jest jeszcze potwierdzona. Skontaktujemy się z Tobą mailowo lub telefonicznie, aby zatwierdzić dostępność i ostatecznie potwierdzić pobyt.
               </p>
             ) : selectedRange ? (
               <form onSubmit={handleSubmit} className="w-full max-w-md space-y-4 text-left">
                 <p className="text-lg">
                   Wybrany termin: {selectedRange[0].toLocaleDateString('pl-PL')} – {selectedRange[1].toLocaleDateString('pl-PL')}
                 </p>
+                {/* Honeypot */}
+                <input type="text" name="_honeypot" style={{ display: 'none' }} tabIndex={-1} autoComplete="off" />
                 <input type="text" name="Imię i nazwisko" placeholder="Imię i nazwisko" required className="w-full border border-gray-300 p-3 rounded" />
                 <input type="email" name="E-mail" placeholder="E-mail" required className="w-full border border-gray-300 p-3 rounded" />
                 <input type="tel" name="Telefon" placeholder="Telefon" required className="w-full border border-gray-300 p-3 rounded" />
                 <textarea name="Wiadomość" placeholder="Dodatkowe informacje (opcjonalnie)" rows={3} className="w-full border border-gray-300 p-3 rounded" />
-                
-                {/* Info box między wiadomością a przyciskiem */}
+
                 <div className="bg-yellow-50 border-l-4 border-yellow-400 text-yellow-800 text-sm p-3 rounded">
-                  <strong>Uwaga:</strong>  Wypełnienie formularza to pierwszy krok do rezerwacji. Po jego wysłaniu potwierdzimy termin mailowo lub telefonicznie
+                  <strong>Uwaga:</strong> Wypełnienie formularza to pierwszy krok do rezerwacji. Po jego wysłaniu potwierdzimy termin mailowo lub telefonicznie.
                 </div>
 
                 <button

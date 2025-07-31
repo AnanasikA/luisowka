@@ -10,6 +10,7 @@ import Rezerwacja from '@/components/RezerwacjaKalendarz';
 import IntroSection from '@/components/IntroSection';
 import Contact from '@/components/Contact';
 import Stopka from '@/components/Stopka';
+import CallNowSection from '@/components/CallNowSection';
 
 export default function Home() {
   return (
@@ -26,6 +27,7 @@ export default function Home() {
       <IntroSection />
       <Contact />
       <Stopka /> 
+      <CallNowSection /> 
     </main>
   );
 }

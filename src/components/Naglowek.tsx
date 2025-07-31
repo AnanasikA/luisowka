@@ -125,47 +125,54 @@ export default function Naglowek() {
               &times;
             </button>
             <h3 className="text-xl font-bold mb-4">Wyślij zapytanie o dostępność</h3>
-            <form
-              action="https://formsubmit.co/kontakt@luisowka.com"
-              method="POST"
-              className="space-y-4"
-              onSubmit={() => setTimeout(() => setShowModal(false), 2000)}
-            >
-              <input type="hidden" name="_subject" value="Zapytanie o dostępność – Luisówka" />
-              <input
-                type="text"
-                name="Imię i nazwisko"
-                placeholder="Imię i nazwisko"
-                required
-                className="w-full border border-gray-300 p-2 rounded"
-              />
-              <input
-                type="email"
-                name="E-mail"
-                placeholder="E-mail"
-                required
-                className="w-full border border-gray-300 p-2 rounded"
-              />
-              <input
-                type="tel"
-                name="Telefon"
-                placeholder="Telefon"
-                required
-                className="w-full border border-gray-300 p-2 rounded"
-              />
-              <textarea
-                name="Wiadomość"
-                placeholder="Termin pobytu, liczba osób, pytania..."
-                rows={3}
-                className="w-full border border-gray-300 p-2 rounded"
-              />
-              <button
-                type="submit"
-                className="w-full bg-[#3f4a3c] text-[#fdfbf7] py-2 px-4 rounded hover:bg-[#2e382c] transition"
-              >
-                Wyślij zapytanie
-              </button>
-            </form>
+          <form
+  action="https://formsubmit.co/kontakt@luisowka.com"
+  method="POST"
+  className="space-y-4"
+  onSubmit={() => setTimeout(() => setShowModal(false), 2000)}
+>
+  {/* 🧠 Honeypot (ukryte pole) */}
+  <input type="text" name="_honeypot" className="hidden" tabIndex={-1} autoComplete="off" />
+  <input type="hidden" name="_subject" value="Zapytanie o dostępność – Luisówka" />
+  <input type="hidden" name="_captcha" value="false" />
+
+  <input
+    type="text"
+    name="Imię i nazwisko"
+    placeholder="Imię i nazwisko"
+    required
+    pattern="^[A-Za-zĄąĆćĘęŁłŃńÓóŚśŹźŻż]{2,}(?:\\s+[A-Za-zĄąĆćĘęŁłŃńÓóŚśŹźŻż]{2,})+$"
+    title="Podaj pełne imię i nazwisko"
+    className="w-full border border-gray-300 p-2 rounded"
+/>
+  <input
+    type="email"
+    name="E-mail"
+    placeholder="E-mail"
+    required
+    className="w-full border border-gray-300 p-2 rounded"
+/>
+  <input
+    type="tel"
+    name="Telefon"
+    placeholder="Telefon"
+    required
+    className="w-full border border-gray-300 p-2 rounded"
+/>
+  <textarea
+    name="Wiadomość"
+    placeholder="Termin pobytu, liczba osób, pytania..."
+    rows={3}
+    className="w-full border border-gray-300 p-2 rounded"
+/>
+  <button
+    type="submit"
+    className="w-full bg-[#3f4a3c] text-[#fdfbf7] py-2 px-4 rounded hover:bg-[#2e382c] transition"
+  >
+    Wyślij zapytanie
+  </button>
+</form>
+
           </div>
         </div>
       )}

@@ -15,12 +15,17 @@ export default function Kontakt() {
     const form = e.currentTarget;
     const formData = new FormData(form);
 
+    // 🔒 Honeypot check (antyboty)
+    if (formData.get('_honeypot')) {
+      alert('Wykryto podejrzaną aktywność.');
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await fetch('https://formsubmit.co/ajax/kontakt@luisowka.com', {
         method: 'POST',
-        headers: {
-          Accept: 'application/json',
-        },
+        headers: { Accept: 'application/json' },
         body: formData,
       });
 
@@ -71,6 +76,9 @@ export default function Kontakt() {
                 <input type="hidden" name="_subject" value="Nowa wiadomość z formularza Luisówka" />
                 <input type="hidden" name="_captcha" value="false" />
 
+                {/* 🐝 Honeypot */}
+                <input type="text" name="_honeypot" className="hidden" tabIndex={-1} autoComplete="off" />
+
                 <div className="flex flex-col">
                   <label htmlFor="name" className="mb-1 font-semibold">Imię i nazwisko</label>
                   <input
@@ -78,8 +86,10 @@ export default function Kontakt() {
                     id="name"
                     name="name"
                     required
+                    pattern="^[A-Za-zĄąĆćĘęŁłŃńÓóŚśŹźŻż]{2,}(?:\s+[A-Za-zĄąĆćĘęŁłŃńÓóŚśŹźŻż]{2,})+$"
+                    title="Podaj pełne imię i nazwisko"
                     className="p-3 rounded-md border border-[#ccc] bg-white text-[#3f4a3c]"
-                    placeholder="Twoje imię"
+                    placeholder="Twoje imię i nazwisko"
                   />
                 </div>
 
