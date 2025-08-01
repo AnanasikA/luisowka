@@ -1,9 +1,6 @@
-'use client';
-
 import type { Metadata } from "next";
-import { useEffect, useState } from "react";
 import "./globals.css";
-import BlockingCookieConsent from "@/components/BlockingCookingContent";
+import BlockingCookieConsent from "@/components/BlockingCookingContent"; // ⬅️ dodany import
 
 export const metadata: Metadata = {
   title: "Luisówka – domek w górach",
@@ -16,19 +13,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [consent, setConsent] = useState<string | null>(null);
-  const [hasChecked, setHasChecked] = useState(false);
-
-  useEffect(() => {
-    const value = localStorage.getItem("cookieConsent");
-    setConsent(value);
-    setHasChecked(true);
-  }, []);
-
-  const isBrakZgodyPage =
-    typeof window !== "undefined" &&
-    window.location.pathname === "/brak-zgody";
-
   return (
     <html lang="pl">
       <head>
@@ -43,14 +27,8 @@ export default function RootLayout({
           fontFamily: '"Open Sans", sans-serif',
         }}
       >
-        {/* Jeśli zgoda jest dana lub jesteśmy na stronie /brak-zgody – pokazuj stronę */}
-        {hasChecked && (consent === 'true' || isBrakZgodyPage) ? (
-          <>
-            {children}
-          </>
-        ) : (
-          <BlockingCookieConsent />
-        )}
+        {children}
+        <BlockingCookieConsent /> {/* ⬅️ kluczowy element */}
       </body>
     </html>
   );
