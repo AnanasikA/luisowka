@@ -5,56 +5,62 @@ import { useRouter } from 'next/navigation';
 import { FaCookieBite } from 'react-icons/fa';
 
 export default function CookieConsent() {
-  const [consentGiven, setConsentGiven] = useState(false);
-  const [checkedStorage, setCheckedStorage] = useState(false);
+  const [visible, setVisible] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
-    const accepted = localStorage.getItem('cookieConsent');
-    if (accepted === 'true') {
-      setConsentGiven(true);
+    if (visible) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
     }
-    setCheckedStorage(true);
-  }, []);
+  }, [visible]);
 
   const handleAccept = () => {
-    localStorage.setItem('cookieConsent', 'true');
-    setConsentGiven(true);
+    setVisible(false);
+    console.log('Cookies accepted');
+    // Możesz też zapisać do localStorage jeśli w przyszłości chcesz zapamiętać
   };
 
   const handleReject = () => {
-    localStorage.setItem('cookieConsent', 'false');
-    router.push('/brak-zgody'); // lub inna strona informacyjna
+    console.log('Cookies rejected');
+    router.push('/brak-zgody'); // <- możesz podmienić na inną stronę
   };
 
-  if (!checkedStorage || consentGiven) return null;
+  if (!visible) return null;
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 md:left-6 md:right-auto max-w-xl bg-white/90 border border-[#657157] text-[#3f4a3c] p-4 rounded-xl shadow-xl z-50 backdrop-blur-md">
-      <div className="flex gap-4 items-start">
-        <FaCookieBite className="text-3xl mt-1 text-[#657157]" />
-        <div className="flex-1 text-sm leading-relaxed">
-          <p>
-            Nasza strona używa plików cookies w celach technicznych, analitycznych i funkcjonalnych.
-            Korzystając z niej, wyrażasz zgodę na ich użycie.
-          </p>
-          <div className="flex flex-wrap gap-3 text-xs mt-2">
-            <a href="/cookies" className="underline">Cookies</a>
-            <span className="text-gray-400">|</span>
-            <a href="/polityka-prywatnosci" className="underline">Polityka prywatności</a>
-            <span className="text-gray-400">|</span>
-            <a href="/regulamin" className="underline">Regulamin</a>
+    <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-[2px] flex justify-center items-center">
+      <div className="bg-[#fdfbf7] text-[#3f4a3c] border border-[#657157] p-6 rounded-xl shadow-lg w-[90%] max-w-md text-sm">
+        <div className="flex items-center gap-3 mb-3">
+          <FaCookieBite className="text-2xl text-[#657157]" />
+          <h2 className="text-base font-semibold">Ta strona korzysta z plików cookies</h2>
+        </div>
+
+       <p className="mb-4 leading-relaxed">
+  Nasza strona korzysta z plików cookies w celu zapewnienia prawidłowego działania, ulepszania komfortu użytkowania oraz analizowania ruchu. Korzystając z witryny, wyrażasz zgodę na ich użycie zgodnie z naszą polityką prywatności. Możesz w każdej chwili zmienić ustawienia dotyczące cookies w swojej przeglądarce.
+</p>
+
+
+        <div className="flex flex-wrap items-center justify-between gap-2 border-t pt-3 border-[#d4cec3]">
+          <div className="flex flex-wrap gap-2 text-sm">
+            <a href="/cookies" className="underline text-[#657157] hover:text-[#3f4a3c]">Cookies</a>
+            <span className="text-[#ccc]">|</span>
+            <a href="/polityka-prywatnosci" className="underline text-[#657157] hover:text-[#3f4a3c]">Polityka prywatności</a>
+            <span className="text-[#ccc]">|</span>
+            <a href="/regulamin" className="underline text-[#657157] hover:text-[#3f4a3c]">Regulamin</a>
           </div>
-          <div className="flex gap-3 mt-4 justify-end">
+
+          <div className="flex gap-2 mt-2">
             <button
               onClick={handleReject}
-              className="px-4 py-1.5 border border-[#8d6e63] text-[#8d6e63] rounded hover:bg-[#fdfbf7] transition"
+              className="px-4 py-2 rounded border border-[#657157] text-[#657157] hover:text-[#3f4a3c] hover:border-[#3f4a3c] transition"
             >
               Odrzucam
             </button>
             <button
               onClick={handleAccept}
-              className="bg-[#657157] text-white px-4 py-1.5 rounded hover:bg-[#3f4a3c] transition"
+              className="px-5 py-2 rounded bg-[#657157] text-white hover:bg-[#3f4a3c] transition"
             >
               Akceptuję
             </button>
