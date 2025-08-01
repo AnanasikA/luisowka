@@ -10,14 +10,6 @@
   --font-heading: "Playfair Display", serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #3f4a3c;
-    --accent: #94a58c;
-  }
-}
-
 /* 🌱 Bazowe style ciała */
 body {
   background: var(--background);

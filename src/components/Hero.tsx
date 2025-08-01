@@ -27,7 +27,7 @@ export default function Hero() {
   poster="/hero-placeholder.webp"
 >
   
-  <source src="/hero(1).mp4" type="video/mp4" />
+  <source src="/hero.mp4" type="video/mp4" />
   <source src="/hero.webm" type="video/webm" />
 
   Twoja przeglądarka nie obsługuje wideo HTML5.

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import BlockingCookieConsent from "@/components/BlockingCookingContent"; // ⬅️ dodany import
 
-// Playfair Display + Open Sans (dopasowane do Hero)
 export const metadata: Metadata = {
   title: "Luisówka – domek w górach",
   description:
@@ -16,7 +16,6 @@ export default function RootLayout({
   return (
     <html lang="pl">
       <head>
-        {/* Fonty z Google Fonts */}
         <link
           href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Playfair+Display:wght@700&display=swap"
           rel="stylesheet"
@@ -29,6 +28,7 @@ export default function RootLayout({
         }}
       >
         {children}
+        <BlockingCookieConsent /> {/* ⬅️ kluczowy element */}
       </body>
     </html>
   );
