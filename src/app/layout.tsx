@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import BlockingCookieConsent from "@/components/BlockingCookingContent"; // ⬅️ dodany import
+import CookieConsent from "@/components/BlockingCookingContent";
 
 export const metadata: Metadata = {
   title: "Luisówka – domek w górach",
@@ -28,7 +28,7 @@ export default function RootLayout({
         }}
       >
         {children}
-        <BlockingCookieConsent /> {/* ⬅️ kluczowy element */}
+        <CookieConsent />
       </body>
     </html>
   );
