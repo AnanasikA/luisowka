@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import BlockingCookieConsent from "@/components/BlockingCookingContent"; // ⬅️ dodany import
+import ClientLayout from "@/components/ClientLayout"; // ⬅️ nowy komponent
 
 export const metadata: Metadata = {
   title: "Luisówka – domek w górach",
@@ -10,9 +10,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="pl">
       <head>
@@ -21,14 +21,8 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body
-        className="bg-[#fdfbf7] text-[#3f4a3c] font-sans antialiased scroll-smooth"
-        style={{
-          fontFamily: '"Open Sans", sans-serif',
-        }}
-      >
-        {children}
-        <BlockingCookieConsent /> {/* ⬅️ kluczowy element */}
+      <body className="bg-[#fdfbf7] text-[#3f4a3c] font-sans antialiased scroll-smooth">
+        <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   );
