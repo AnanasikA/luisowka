@@ -1,6 +1,9 @@
+'use client';
+
 import type { Metadata } from "next";
+import { useEffect, useState } from "react";
 import "./globals.css";
-import ClientLayout from "@/components/ClientLayout"; // ⬅️ nowy komponent
+import BlockingCookieConsent from "@/components/BlockingCookingContent";
 
 export const metadata: Metadata = {
   title: "Luisówka – domek w górach",
@@ -10,9 +13,22 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
+  const [consent, setConsent] = useState<string | null>(null);
+  const [hasChecked, setHasChecked] = useState(false);
+
+  useEffect(() => {
+    const value = localStorage.getItem("cookieConsent");
+    setConsent(value);
+    setHasChecked(true);
+  }, []);
+
+  const isBrakZgodyPage =
+    typeof window !== "undefined" &&
+    window.location.pathname === "/brak-zgody";
+
   return (
     <html lang="pl">
       <head>
@@ -21,8 +37,20 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="bg-[#fdfbf7] text-[#3f4a3c] font-sans antialiased scroll-smooth">
-        <ClientLayout>{children}</ClientLayout>
+      <body
+        className="bg-[#fdfbf7] text-[#3f4a3c] font-sans antialiased scroll-smooth"
+        style={{
+          fontFamily: '"Open Sans", sans-serif',
+        }}
+      >
+        {/* Jeśli zgoda jest dana lub jesteśmy na stronie /brak-zgody – pokazuj stronę */}
+        {hasChecked && (consent === 'true' || isBrakZgodyPage) ? (
+          <>
+            {children}
+          </>
+        ) : (
+          <BlockingCookieConsent />
+        )}
       </body>
     </html>
   );
