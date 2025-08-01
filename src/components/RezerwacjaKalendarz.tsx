@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './styles/calendar-custom.css';
+import { FiAlertTriangle } from 'react-icons/fi';
 
 import { db } from '../lib/firebase';
 import { collection, getDocs, addDoc, Timestamp, query, where } from 'firebase/firestore';
@@ -16,6 +17,7 @@ export default function RezerwacjaKalendarz() {
   const [bookedDates, setBookedDates] = useState<Date[]>([]);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     const fetchBookedDates = async () => {
@@ -52,21 +54,36 @@ export default function RezerwacjaKalendarz() {
   };
 
   const handleDateChange = (value: Value) => {
+    setErrorMessage('');
+
     if (Array.isArray(value) && value[0] instanceof Date && value[1] instanceof Date) {
-      const diffInDays = Math.floor((value[1].getTime() - value[0].getTime()) / (1000 * 60 * 60 * 24));
-      if (diffInDays < 1) {
-        alert('Minimalny czas pobytu to 2 doby.');
-        setSelectedRange(null);
-        return;
-      }
-      setSelectedRange([value[0], value[1]]);
+      const start = new Date(value[0]);
+      const end = new Date(value[1]);
+
+      start.setHours(16, 0, 0, 0);
+      end.setHours(22, 0, 0, 0);
+
+      setSelectedRange([start, end]);
     } else {
       setSelectedRange(null);
     }
   };
 
+  const showForm =
+    selectedRange &&
+    selectedRange[0] instanceof Date &&
+    selectedRange[1] instanceof Date &&
+    Math.floor((selectedRange[1].getTime() - selectedRange[0].getTime()) / (1000 * 60 * 60 * 24)) >= 2;
+
+  const tooShortRange =
+    selectedRange &&
+    selectedRange[0] instanceof Date &&
+    selectedRange[1] instanceof Date &&
+    Math.floor((selectedRange[1].getTime() - selectedRange[0].getTime()) / (1000 * 60 * 60 * 24)) < 2;
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setErrorMessage('');
     setLoading(true);
 
     const form = e.currentTarget;
@@ -83,7 +100,7 @@ export default function RezerwacjaKalendarz() {
 
     const nameRegex = /^[A-Za-zÀ-ÿżźćńółęąśŻŹĆĄŚĘŁÓŃ\s'-]{2,}$/;
     if (!name || !nameRegex.test(name)) {
-      alert('Podaj poprawne imię i nazwisko.');
+      setErrorMessage('Podaj poprawne imię i nazwisko.');
       setLoading(false);
       return;
     }
@@ -91,21 +108,33 @@ export default function RezerwacjaKalendarz() {
     if (selectedRange) {
       const start = selectedRange[0];
       const end = selectedRange[1];
+      const diffInDays = Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+
+      if (diffInDays < 2) {
+        setErrorMessage('Minimalny czas pobytu to 2 doby.');
+        setLoading(false);
+        return;
+      }
+
       formData.append('Zakres dat', `${start.toLocaleDateString('pl-PL')} – ${end.toLocaleDateString('pl-PL')}`);
 
       try {
+        const q = query(
+          collection(db, 'rezerwacje'),
+          where('name', '==', name)
+        );
+        const snapshot = await getDocs(q);
+
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
-        const q = query(
-          collection(db, 'rezerwacje'),
-          where('name', '==', name),
-          where('createdAt', '>=', Timestamp.fromDate(today))
-        );
+        const hasAlreadyBookedToday = snapshot.docs.some((doc) => {
+          const createdAt = doc.data().createdAt?.toDate?.();
+          return createdAt && createdAt >= today;
+        });
 
-        const existing = await getDocs(q);
-        if (!existing.empty) {
-          alert('Możesz zarezerwować tylko jeden termin dziennie.');
+        if (hasAlreadyBookedToday) {
+          setErrorMessage('Możesz zarezerwować tylko jeden termin dziennie.');
           setLoading(false);
           return;
         }
@@ -128,16 +157,16 @@ export default function RezerwacjaKalendarz() {
         if (response.ok) {
           setSubmitted(true);
         } else {
-          alert('Wystąpił błąd przy wysyłce e-maila.');
+          setErrorMessage('Wystąpił błąd przy wysyłce e-maila.');
         }
       } catch (error) {
-        alert('Wystąpił błąd przy zapisie lub wysyłce.');
+        console.error('Błąd:', error);
+        setErrorMessage('Wystąpił błąd przy zapisie lub wysyłce.');
       }
     }
 
     setLoading(false);
   };
-
   return (
     <section id="rezerwacja" className="bg-[#fdfbf7] py-24 px-6 text-[#3f4a3c]">
       <div className="max-w-6xl mx-auto text-center">
@@ -165,17 +194,22 @@ export default function RezerwacjaKalendarz() {
             </div>
           </div>
 
-          {/* Formularz */}
+          {/* Formularz lub komunikaty */}
           <div className="w-full md:w-1/2 flex items-center justify-center px-6 py-8 bg-white border-t md:border-t-0 md:border-l border-gray-200">
             {submitted ? (
               <p className="text-[#3f4a3c] text-lg font-semibold">
                 Rezerwacja została wysłana, ale nie jest jeszcze potwierdzona. Skontaktujemy się z Tobą mailowo lub telefonicznie, aby zatwierdzić dostępność i ostatecznie potwierdzić pobyt.
               </p>
-            ) : selectedRange ? (
+            ) : showForm ? (
               <form onSubmit={handleSubmit} className="w-full max-w-md space-y-4 text-left">
                 <p className="text-lg">
-                  Wybrany termin: {selectedRange[0].toLocaleDateString('pl-PL')} – {selectedRange[1].toLocaleDateString('pl-PL')}
+                  Wybrany termin: {selectedRange?.[0].toLocaleDateString('pl-PL')} – {selectedRange?.[1].toLocaleDateString('pl-PL')}
                 </p>
+
+                {errorMessage && (
+                  <div className="text-red-600 text-sm font-medium">{errorMessage}</div>
+                )}
+
                 <input type="text" name="_honeypot" style={{ display: 'none' }} tabIndex={-1} autoComplete="off" />
                 <input type="text" name="Imię i nazwisko" placeholder="Imię i nazwisko" required className="w-full border border-gray-300 p-3 rounded" />
                 <input type="email" name="E-mail" placeholder="E-mail" required className="w-full border border-gray-300 p-3 rounded" />
@@ -194,6 +228,16 @@ export default function RezerwacjaKalendarz() {
                   {loading ? 'Wysyłanie...' : 'Zarezerwuj termin'}
                 </button>
               </form>
+            ) : tooShortRange ? (
+            <div className="flex flex-col items-center justify-center text-center text-red-600 px-2 space-y-2">
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M12 3.75c-4.556 0-8.25 3.694-8.25 8.25s3.694 8.25 8.25 8.25 8.25-3.694 8.25-8.25S16.556 3.75 12 3.75z" />
+  </svg>
+  <p className="text-base font-medium">
+    Minimalny czas pobytu to <strong>2 doby</strong>. Wybierz dłuższy zakres dat w kalendarzu.
+  </p>
+</div>
+
             ) : (
               <div className="flex flex-col justify-center items-center text-center text-[#3f4a3c] space-y-4 px-2">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-[#657157]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
