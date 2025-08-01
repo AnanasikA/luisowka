@@ -53,6 +53,12 @@ export default function RezerwacjaKalendarz() {
 
   const handleDateChange = (value: Value) => {
     if (Array.isArray(value) && value[0] instanceof Date && value[1] instanceof Date) {
+      const diffInDays = Math.floor((value[1].getTime() - value[0].getTime()) / (1000 * 60 * 60 * 24));
+      if (diffInDays < 1) {
+        alert('Minimalny czas pobytu to 2 doby.');
+        setSelectedRange(null);
+        return;
+      }
       setSelectedRange([value[0], value[1]]);
     } else {
       setSelectedRange(null);
@@ -88,7 +94,6 @@ export default function RezerwacjaKalendarz() {
       formData.append('Zakres dat', `${start.toLocaleDateString('pl-PL')} – ${end.toLocaleDateString('pl-PL')}`);
 
       try {
-        // Sprawdzenie, czy osoba już zarezerwowała dziś
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
@@ -133,14 +138,15 @@ export default function RezerwacjaKalendarz() {
     setLoading(false);
   };
 
-   return (
+  return (
     <section id="rezerwacja" className="bg-[#fdfbf7] py-24 px-6 text-[#3f4a3c]">
       <div className="max-w-6xl mx-auto text-center">
         <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: 'Playfair Display, serif' }}>
           Zarezerwuj swój pobyt
         </h2>
         <p className="text-lg md:text-xl mb-12 max-w-2xl mx-auto" style={{ fontFamily: 'Open Sans, sans-serif' }}>
-          Wybierz dogodny zakres dat i zarezerwuj wypoczynek w sercu gór. Luisówka to idealne miejsce na relaks wśród natury i ciszy.
+          Wybierz dogodny zakres dat i zarezerwuj wypoczynek w sercu gór. Luisówka to idealne miejsce na relaks wśród natury i ciszy. 
+          <strong className="block mt-2">Minimalny czas pobytu to 2 doby.</strong>
         </p>
 
         <div className="bg-white rounded-xl shadow-md flex flex-col md:flex-row min-h-[600px] overflow-hidden animate-fade-in transition-all duration-500">
@@ -170,7 +176,6 @@ export default function RezerwacjaKalendarz() {
                 <p className="text-lg">
                   Wybrany termin: {selectedRange[0].toLocaleDateString('pl-PL')} – {selectedRange[1].toLocaleDateString('pl-PL')}
                 </p>
-                {/* Honeypot */}
                 <input type="text" name="_honeypot" style={{ display: 'none' }} tabIndex={-1} autoComplete="off" />
                 <input type="text" name="Imię i nazwisko" placeholder="Imię i nazwisko" required className="w-full border border-gray-300 p-3 rounded" />
                 <input type="email" name="E-mail" placeholder="E-mail" required className="w-full border border-gray-300 p-3 rounded" />
