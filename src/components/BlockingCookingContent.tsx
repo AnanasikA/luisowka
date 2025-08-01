@@ -19,7 +19,8 @@ export default function CookieConsent() {
   };
 
   const handleReject = () => {
-    window.location.href = '/brak-zgody';
+    localStorage.setItem('cookieConsent', 'false');
+    setVisible(false);
   };
 
   if (!visible) return null;
