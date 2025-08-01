@@ -1,30 +1,35 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function BrakZgodyPage() {
   const router = useRouter();
 
-  const handleBack = () => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('cookieConsent');
+  useEffect(() => {
+    const consent = localStorage.getItem('cookieConsent');
+    if (consent === 'true') {
+      router.push('/');
     }
-    router.push('/');
-  };
+  }, [router]);
 
   return (
-    <main className="min-h-screen bg-[#fdfbf7] text-[#3f4a3c] flex flex-col items-center justify-center px-4 text-center">
-      <h1 className="text-3xl font-bold mb-4">Brak zgody na cookies</h1>
-      <p className="mb-6 max-w-xl">
-        Aby korzystać z naszej strony, wymagamy zgody na pliki cookies.
-        Niestety, bez jej wyrażenia nie możemy umożliwić dalszego przeglądania zawartości.
-      </p>
-      <button
-        onClick={handleBack}
-        className="bg-[#657157] text-white px-5 py-2 rounded hover:bg-[#3f4a3c] transition"
-      >
-        Wróć i wyraź zgodę
-      </button>
-    </main>
+    <div className="min-h-screen flex items-center justify-center bg-[#fdfbf7] text-[#3f4a3c] px-4 text-center">
+      <div className="max-w-xl space-y-6">
+        <h1 className="text-2xl font-semibold">Brak zgody na cookies</h1>
+        <p>
+          Nie wyraziłeś zgody na użycie plików cookies, dlatego dostęp do zawartości strony został ograniczony.
+        </p>
+        <button
+          onClick={() => {
+            localStorage.setItem('cookieConsent', 'true');
+            router.push('/');
+          }}
+          className="px-5 py-2 rounded bg-[#657157] text-white hover:bg-[#3f4a3c] transition"
+        >
+          Akceptuję cookies i przejdź dalej
+        </button>
+      </div>
+    </div>
   );
 }
