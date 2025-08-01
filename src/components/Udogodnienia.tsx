@@ -45,9 +45,7 @@ export default function Udogodnienia() {
         </h2>
 
         <p className="text-center text-base sm:text-lg max-w-3xl mx-auto mb-12 text-[#3f4a3c]">
-          Cały obiekt tylko dla Ciebie – 74 m² komfortowej przestrzeni z tarasem, w pełni wyposażoną kuchnią,
-          prywatną łazienką i klimatyzacją. Na miejscu dostępne są: bezpłatny parking, szybkie Wi‑Fi, telewizor,
-          pralka oraz wiele udogodnień, które sprawią, że poczujesz się jak w domu.
+          Przytulny domek o powierzchni 74 m² przeznaczony dla maksymalnie <strong>7 osób</strong>. Do dyspozycji gości jest taras, prywatna łazienka oraz komfortowa przestrzeń do wypoczynku i wspólnego gotowania. <strong>Minimalny czas wynajmu to 2 doby</strong>. Wszystko, czego potrzebujesz, by poczuć się jak u siebie.
         </p>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 sm:gap-10 text-center">

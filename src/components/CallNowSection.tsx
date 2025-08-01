@@ -8,7 +8,7 @@ export default function FloatingCallButton() {
       href="tel:+48601675411"
       aria-label="Zadzwoń do nas"
       className="fixed bottom-12 right-8 z-50 
-                 bg-[#3f4a3c] hover:bg-[#2e382c] 
+                 bg-[#657157] hover:bg-[#eae7df] 
                  text-[#fdfbf7] 
                  p-4 rounded-full shadow-md 
                  transition-all duration-300 

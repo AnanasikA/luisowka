@@ -46,6 +46,10 @@ export default function Cennik() {
             <span>Jacuzzi (opcja dodatkowa)</span>
             <span>300 zł (jednorazowo)</span>
           </div>
+          <div className="flex justify-between border-b pb-2">
+            <span>Minimalna długość pobytu</span>
+            <span>2 doby</span>
+          </div>
           <div className="pt-4 text-sm text-gray-600 italic">
             Skontaktuj się z nami, a przygotujemy indywidualną ofertę.
           </div>
