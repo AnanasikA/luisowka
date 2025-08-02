@@ -52,7 +52,7 @@ export default function ForestImageSection() {
         {/* Obraz po prawej */}
         <div className="relative w-full aspect-[3/2] max-h-[360px] rounded-xl overflow-hidden shadow-xl slide-in-right opacity-0 transition duration-1000">
           <Image
-            src="/16.webp"
+            src="/15.webp"
             alt="Leśne otoczenie Luisówki"
             fill
             quality={85}

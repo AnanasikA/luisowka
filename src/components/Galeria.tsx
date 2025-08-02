@@ -16,14 +16,11 @@ const obrazy = [
   '/9.webp',
   '/10.webp',
   '/11.webp',
+  '/12.webp',
   '/13.webp',
   '/14.webp',
   '/15.webp',
   '/16.webp',
-  '/18.webp',
-  '/12.webp',
-  '/19.webp',
-
 ];
 
 export default function Galeria() {

@@ -52,7 +52,7 @@ export default function MomentsSection() {
           viewport={{ once: true }}
         >
           <Image
-  src="/15.webp"
+  src="/13.webp"
   alt="Luisówka w lesie"
   fill
   quality={80}
