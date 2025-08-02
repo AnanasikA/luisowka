@@ -4,10 +4,9 @@ import { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './styles/calendar-custom.css';
-import { FiAlertTriangle } from 'react-icons/fi';
-
 import { db } from '../lib/firebase';
 import { collection, getDocs, addDoc, Timestamp, query, where } from 'firebase/firestore';
+import { FiAlertTriangle } from 'react-icons/fi';
 
 type ValuePiece = Date | null;
 type Value = [ValuePiece, ValuePiece] | ValuePiece;
@@ -37,6 +36,7 @@ export default function RezerwacjaKalendarz() {
           }
         }
       });
+
       setBookedDates(dates);
     };
 
@@ -46,11 +46,7 @@ export default function RezerwacjaKalendarz() {
   const isDateDisabled = (date: Date) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-
-    return (
-      date < today ||
-      bookedDates.some((booked) => date.toDateString() === booked.toDateString())
-    );
+    return date < today || bookedDates.some((d) => d.toDateString() === date.toDateString());
   };
 
   const handleDateChange = (value: Value) => {
@@ -60,9 +56,29 @@ export default function RezerwacjaKalendarz() {
       const start = new Date(value[0]);
       const end = new Date(value[1]);
 
+      if (start > end) {
+        setSelectedRange(null);
+        return;
+      }
+
+      const current = new Date(start);
+      let hasBlockedInBetween = false;
+      while (current <= end) {
+        if (bookedDates.find((d) => d.toDateString() === current.toDateString())) {
+          hasBlockedInBetween = true;
+          break;
+        }
+        current.setDate(current.getDate() + 1);
+      }
+
+      if (hasBlockedInBetween) {
+        setSelectedRange(null);
+        setErrorMessage('Nie można zarezerwować zakresu z zajętymi dniami w środku.');
+        return;
+      }
+
       start.setHours(16, 0, 0, 0);
       end.setHours(22, 0, 0, 0);
-
       setSelectedRange([start, end]);
     } else {
       setSelectedRange(null);
@@ -88,7 +104,6 @@ export default function RezerwacjaKalendarz() {
 
     const form = e.currentTarget;
     const formData = new FormData(form);
-
     if (formData.get('_honeypot')) {
       setLoading(false);
       return;
@@ -106,8 +121,7 @@ export default function RezerwacjaKalendarz() {
     }
 
     if (selectedRange) {
-      const start = selectedRange[0];
-      const end = selectedRange[1];
+      const [start, end] = selectedRange;
       const diffInDays = Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
 
       if (diffInDays < 2) {
@@ -119,10 +133,7 @@ export default function RezerwacjaKalendarz() {
       formData.append('Zakres dat', `${start.toLocaleDateString('pl-PL')} – ${end.toLocaleDateString('pl-PL')}`);
 
       try {
-        const q = query(
-          collection(db, 'rezerwacje'),
-          where('name', '==', name)
-        );
+        const q = query(collection(db, 'rezerwacje'), where('name', '==', name));
         const snapshot = await getDocs(q);
 
         const today = new Date();
@@ -167,6 +178,7 @@ export default function RezerwacjaKalendarz() {
 
     setLoading(false);
   };
+
   return (
     <section id="rezerwacja" className="bg-[#fdfbf7] py-24 px-6 text-[#3f4a3c]">
       <div className="max-w-6xl mx-auto text-center">
@@ -174,11 +186,11 @@ export default function RezerwacjaKalendarz() {
           Zarezerwuj swój pobyt
         </h2>
         <p className="text-lg md:text-xl mb-12 max-w-2xl mx-auto" style={{ fontFamily: 'Open Sans, sans-serif' }}>
-          Wybierz dogodny zakres dat i zarezerwuj wypoczynek w sercu gór. Luisówka to idealne miejsce na relaks wśród natury i ciszy. 
+          Wybierz dogodny zakres dat i zarezerwuj wypoczynek w sercu gór. Luisówka to idealne miejsce na relaks wśród natury i ciszy.
           <strong className="block mt-2">Minimalny czas pobytu to 2 doby.</strong>
         </p>
 
-        <div className="bg-white rounded-xl shadow-md flex flex-col md:flex-row min-h-[600px] overflow-hidden animate-fade-in transition-all duration-500">
+        <div className="bg-white rounded-xl shadow-md flex flex-col md:flex-row min-h-[600px] overflow-hidden transition-all duration-500">
           {/* Kalendarz */}
           <div className="w-full md:w-1/2 flex items-start justify-center p-6">
             <div className="w-full flex justify-center items-start pt-4">
@@ -207,7 +219,10 @@ export default function RezerwacjaKalendarz() {
                 </p>
 
                 {errorMessage && (
-                  <div className="text-red-600 text-sm font-medium">{errorMessage}</div>
+                  <div className="flex items-start gap-2 text-red-600 bg-red-50 border border-red-300 p-3 rounded text-sm font-medium">
+                    <FiAlertTriangle className="text-xl mt-0.5" />
+                    <span>{errorMessage}</span>
+                  </div>
                 )}
 
                 <input type="text" name="_honeypot" style={{ display: 'none' }} tabIndex={-1} autoComplete="off" />
@@ -229,15 +244,12 @@ export default function RezerwacjaKalendarz() {
                 </button>
               </form>
             ) : tooShortRange ? (
-            <div className="flex flex-col items-center justify-center text-center text-red-600 px-2 space-y-2">
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M12 3.75c-4.556 0-8.25 3.694-8.25 8.25s3.694 8.25 8.25 8.25 8.25-3.694 8.25-8.25S16.556 3.75 12 3.75z" />
-  </svg>
-  <p className="text-base font-medium">
-    Minimalny czas pobytu to <strong>2 doby</strong>. Wybierz dłuższy zakres dat w kalendarzu.
-  </p>
-</div>
-
+              <div className="flex flex-col items-center justify-center text-center text-red-600 px-2 space-y-2">
+                <FiAlertTriangle className="h-10 w-10 text-red-600" />
+                <p className="text-base font-medium">
+                  Minimalny czas pobytu to <strong>2 doby</strong>. Wybierz dłuższy zakres dat w kalendarzu.
+                </p>
+              </div>
             ) : (
               <div className="flex flex-col justify-center items-center text-center text-[#3f4a3c] space-y-4 px-2">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-[#657157]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
