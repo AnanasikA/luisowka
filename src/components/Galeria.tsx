@@ -8,8 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 const obrazy = [
   '/start.webp',
   '/1.webp',
-  '/2.webp',
-  '/4.webp',
+  '/3.webp',
   '/5.webp',
   '/6.webp',
   '/7.webp',
@@ -22,6 +21,7 @@ const obrazy = [
   '/15.webp',
   '/16.webp',
   '/18.webp',
+  '/12.webp',
   '/19.webp',
 
 ];

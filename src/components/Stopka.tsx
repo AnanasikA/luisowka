@@ -55,6 +55,19 @@ export default function Stopka() {
           </Link>
         </span>
       </div>
+
+      {/* Linki prawne */}
+      <div className="mt-4 text-center text-xs text-[#b8b4ac] space-x-4">
+        <Link href="/cookies" className="underline hover:text-[#fdfbf7]">
+          Polityka cookies
+        </Link>
+        <Link href="/polityka-prywatnosci" className="underline hover:text-[#fdfbf7]">
+          Polityka prywatności
+        </Link>
+        <Link href="/regulamin" className="underline hover:text-[#fdfbf7]">
+          Regulamin
+        </Link>
+      </div>
     </motion.footer>
   );
 }
