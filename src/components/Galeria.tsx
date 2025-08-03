@@ -6,8 +6,10 @@ import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const obrazy = [
-  '/start.webp',
+  '/start(1).webp',
+  '/32.webp',
   '/1.webp',
+  '/2.webp',
   '/3.webp',
   '/5.webp',
   '/6.webp',
@@ -15,6 +17,11 @@ const obrazy = [
   '/8.webp',
   '/9.webp',
   '/10.webp',
+  '/34.webp',
+  '/35.jpg',
+  '/36.webp',
+  '/32.webp',
+  '/33.webp',
   '/11.webp',
   '/12.webp',
   '/13.webp',
