@@ -21,7 +21,6 @@ const obrazy = [
   '/35.jpg',
   '/36.webp',
   '/32.webp',
-  '/33.webp',
   '/11.webp',
   '/12.webp',
   '/13.webp',
@@ -50,7 +49,7 @@ export default function Galeria() {
       <div className="pt-8 sm:pt-16 text-center">
         <h2
           className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-wide text-[#fdfbf7] mb-2 sm:mb-6"
-          style={{ fontFamily: '"Playfair Display", serif',color: '#fdfbf7' }}
+          style={{ fontFamily: '"Playfair Display", serif' }}
         >
           Zajrzyj do środka
         </h2>
@@ -66,7 +65,9 @@ export default function Galeria() {
           <FaChevronLeft />
         </button>
 
-        <div className="relative w-full max-w-[95vw] sm:max-w-3xl md:max-w-4xl aspect-[4/3] rounded-xl overflow-hidden shadow-lg">
+        <div
+          className="relative w-full max-w-[95vw] sm:max-w-3xl md:max-w-4xl aspect-[4/3] bg-black rounded-xl overflow-hidden shadow-lg"
+        >
           <AnimatePresence mode="wait">
             <motion.div
               key={index}
@@ -80,8 +81,8 @@ export default function Galeria() {
                 src={obrazy[index]}
                 alt={`Zdjęcie ${index + 1}`}
                 fill
-                quality={80}
-                className="object-contain"
+                quality={85}
+                className="object-cover"
                 sizes="(max-width: 768px) 95vw, (max-width: 1280px) 80vw, 1200px"
                 priority
               />
