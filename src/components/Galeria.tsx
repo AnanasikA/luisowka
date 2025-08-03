@@ -20,7 +20,6 @@ const obrazy = [
   '/34.webp',
   '/35.jpg',
   '/36.webp',
-  '/32.webp',
   '/11.webp',
   '/12.webp',
   '/13.webp',
