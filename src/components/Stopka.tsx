@@ -27,7 +27,7 @@ export default function Stopka() {
         {/* Kontakt */}
         <div>
           <p className="text-sm font-semibold mb-1">Kontakt</p>
-          <p className="text-sm">kontakt@luisowka.pl</p>
+          <p className="text-sm">kontakt@luisowka.com</p>
           <p className="text-sm">+48 601 675 411</p>
         </div>
 
