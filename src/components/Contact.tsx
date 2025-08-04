@@ -102,7 +102,7 @@ return (
                   name="E-mail"
                   required
                   className="p-3 rounded-md border border-[#ccc] bg-white text-[#3f4a3c]"
-                  placeholder="np. kontakt@luisowka.pl"
+                  placeholder="np. kontakt@luisowka.com"
                 />
               </div>
 
