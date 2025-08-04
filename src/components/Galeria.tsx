@@ -6,6 +6,7 @@ import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const obrazy = [
+  '/start.webp',
   '/start(1).webp',
   '/32.webp',
   '/1.webp',
