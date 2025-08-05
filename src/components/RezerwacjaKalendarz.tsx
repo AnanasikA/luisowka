@@ -4,16 +4,18 @@ import { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './styles/calendar-custom.css';
-import { db } from '../lib/firebase';
+import { db } from '@/lib/firebase';
 import { collection, getDocs, addDoc, Timestamp, query, where } from 'firebase/firestore';
 import { FiAlertTriangle } from 'react-icons/fi';
 
 type ValuePiece = Date | null;
 type Value = [ValuePiece, ValuePiece] | ValuePiece;
 
+const formatDate = (date: Date) => date.toISOString().split('T')[0]; // "2025-08-04"
+
 export default function RezerwacjaKalendarz() {
   const [selectedRange, setSelectedRange] = useState<[Date, Date] | null>(null);
-  const [bookedDates, setBookedDates] = useState<Date[]>([]);
+  const [bookedDates, setBookedDates] = useState<string[]>([]);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -21,7 +23,7 @@ export default function RezerwacjaKalendarz() {
   useEffect(() => {
     const fetchBookedDates = async () => {
       const querySnapshot = await getDocs(collection(db, 'rezerwacje'));
-      const dates: Date[] = [];
+      const dates: string[] = [];
 
       querySnapshot.forEach((doc) => {
         const data = doc.data();
@@ -31,7 +33,7 @@ export default function RezerwacjaKalendarz() {
         if (start && end) {
           const current = new Date(start);
           while (current <= end) {
-            dates.push(new Date(current));
+            dates.push(formatDate(new Date(current)));
             current.setDate(current.getDate() + 1);
           }
         }
@@ -46,7 +48,8 @@ export default function RezerwacjaKalendarz() {
   const isDateDisabled = (date: Date) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    return date < today || bookedDates.some((d) => d.toDateString() === date.toDateString());
+    const dateStr = formatDate(date);
+    return date < today || bookedDates.includes(dateStr);
   };
 
   const handleDateChange = (value: Value) => {
@@ -64,7 +67,8 @@ export default function RezerwacjaKalendarz() {
       const current = new Date(start);
       let hasBlockedInBetween = false;
       while (current <= end) {
-        if (bookedDates.find((d) => d.toDateString() === current.toDateString())) {
+        const currentStr = formatDate(current);
+        if (bookedDates.includes(currentStr)) {
           hasBlockedInBetween = true;
           break;
         }
