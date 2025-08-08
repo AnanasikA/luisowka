@@ -11,21 +11,21 @@ import { FiAlertTriangle } from 'react-icons/fi';
 type ValuePiece = Date | null;
 type Value = [ValuePiece, ValuePiece] | ValuePiece;
 
-const formatDate = (date: Date) => date.toISOString().split('T')[0]; // "2025-08-04"
+const formatDate = (date: Date) => date.toISOString().split('T')[0]; // "2025-08-05"
 
 export default function RezerwacjaKalendarz() {
   const [selectedRange, setSelectedRange] = useState<[Date, Date] | null>(null);
-  const [bookedDates, setBookedDates] = useState<string[]>([]);
+  const [bookedDates, setBookedDates] = useState<Set<string>>(new Set());
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     const fetchBookedDates = async () => {
-      const querySnapshot = await getDocs(collection(db, 'rezerwacje'));
-      const dates: string[] = [];
+      const snapshot = await getDocs(collection(db, 'rezerwacje'));
+      const tempDates = new Set<string>();
 
-      querySnapshot.forEach((doc) => {
+      snapshot.forEach((doc) => {
         const data = doc.data();
         const start = data.start?.toDate?.();
         const end = data.end?.toDate?.();
@@ -33,13 +33,14 @@ export default function RezerwacjaKalendarz() {
         if (start && end) {
           const current = new Date(start);
           while (current <= end) {
-            dates.push(formatDate(new Date(current)));
+            const formatted = formatDate(current);
+            tempDates.add(formatted);
             current.setDate(current.getDate() + 1);
           }
         }
       });
 
-      setBookedDates(dates);
+      setBookedDates(tempDates);
     };
 
     fetchBookedDates();
@@ -48,8 +49,9 @@ export default function RezerwacjaKalendarz() {
   const isDateDisabled = (date: Date) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
+
     const dateStr = formatDate(date);
-    return date < today || bookedDates.includes(dateStr);
+    return date < today || bookedDates.has(dateStr);
   };
 
   const handleDateChange = (value: Value) => {
@@ -65,20 +67,14 @@ export default function RezerwacjaKalendarz() {
       }
 
       const current = new Date(start);
-      let hasBlockedInBetween = false;
       while (current <= end) {
         const currentStr = formatDate(current);
-        if (bookedDates.includes(currentStr)) {
-          hasBlockedInBetween = true;
-          break;
+        if (bookedDates.has(currentStr)) {
+          setSelectedRange(null);
+          setErrorMessage('Nie można zarezerwować zakresu z zajętymi dniami w środku.');
+          return;
         }
         current.setDate(current.getDate() + 1);
-      }
-
-      if (hasBlockedInBetween) {
-        setSelectedRange(null);
-        setErrorMessage('Nie można zarezerwować zakresu z zajętymi dniami w środku.');
-        return;
       }
 
       start.setHours(16, 0, 0, 0);
