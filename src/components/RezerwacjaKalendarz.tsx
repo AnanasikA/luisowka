@@ -11,17 +11,15 @@ import { FiAlertTriangle } from 'react-icons/fi';
 type ValuePiece = Date | null;
 type Value = [ValuePiece, ValuePiece] | ValuePiece;
 
-/** --- Pomocnicze: lokalne daty bez pułapek strefy czasowej --- */
+// --- Funkcje pomocnicze dla dat ---
 const toLocalMidnight = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
 const endOfLocalDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59, 999);
 const formatLocal = (d: Date) => {
   const y = d.getFullYear();
   const m = String(d.getMonth() + 1).padStart(2, '0');
   const day = String(d.getDate()).padStart(2, '0');
-  return `${y}-${m}-${day}`; // Np. 2025-08-05
+  return `${y}-${m}-${day}`; // np. 2025-08-05
 };
-
-/** Generuje kolejne lokalne dni (inkl. końca) w formacie YYYY-MM-DD */
 const enumerateLocalDays = (start: Date, end: Date): string[] => {
   const res: string[] = [];
   const cur = toLocalMidnight(start);
@@ -40,6 +38,7 @@ export default function RezerwacjaKalendarz() {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
+  // Pobranie zajętych dat z Firestore
   useEffect(() => {
     const fetchBookedDates = async () => {
       const snap = await getDocs(collection(db, 'rezerwacje'));
@@ -51,9 +50,7 @@ export default function RezerwacjaKalendarz() {
         const e: Date | undefined = data.end?.toDate?.();
         if (!s || !e) return;
 
-        // Upewniamy się, że iterujemy po pełnych DOBACH w czasie lokalnym
-        const days = enumerateLocalDays(s, e);
-        days.forEach((d) => tmp.add(d));
+        enumerateLocalDays(s, e).forEach((d) => tmp.add(d));
       });
 
       setBookedDates(tmp);
@@ -62,14 +59,14 @@ export default function RezerwacjaKalendarz() {
     fetchBookedDates();
   }, []);
 
-  /** Blokada: daty przeszłe + zarezerwowane */
+  // Blokowanie dat
   const isDateDisabled = (date: Date) => {
     const today = toLocalMidnight(new Date());
     const dayStr = formatLocal(date);
     return toLocalMidnight(date) < today || bookedDates.has(dayStr);
   };
 
-  /** Wybór zakresu */
+  // Obsługa wyboru dat
   const handleDateChange = (value: Value) => {
     setErrorMessage('');
 
@@ -82,42 +79,37 @@ export default function RezerwacjaKalendarz() {
         return;
       }
 
-      // Sprawdź kolizję z zajętymi dniami
+      // Sprawdzenie kolizji z zajętymi dniami
       const days = enumerateLocalDays(start, end);
-      const collision = days.some((d) => bookedDates.has(d));
-      if (collision) {
+      if (days.some((d) => bookedDates.has(d))) {
         setSelectedRange(null);
         setErrorMessage('Nie można zarezerwować zakresu z zajętymi dniami w środku.');
         return;
       }
 
-      // Przechowujemy pełne doby: 00:00 .. 23:59:59.999 (tylko do zapisu i walidacji)
+      // Ustawienie pełnych dób
       setSelectedRange([start, endOfLocalDay(end)]);
     } else {
       setSelectedRange(null);
     }
   };
 
-  /** Walidacja minimalnej długości pobytu (2 doby) */
-  const showForm =
+  // Wyliczenie liczby wybranych dni
+  const selectedDaysCount =
     selectedRange &&
     selectedRange[0] instanceof Date &&
-    selectedRange[1] instanceof Date &&
-    Math.floor(
-      (toLocalMidnight(selectedRange[1]).getTime() - toLocalMidnight(selectedRange[0]).getTime()) /
-        (1000 * 60 * 60 * 24)
-    ) >= 2;
+    selectedRange[1] instanceof Date
+      ? Math.floor(
+          (toLocalMidnight(selectedRange[1]).getTime() - toLocalMidnight(selectedRange[0]).getTime()) /
+            (1000 * 60 * 60 * 24)
+        ) + 1
+      : 0;
 
-  const tooShortRange =
-    selectedRange &&
-    selectedRange[0] instanceof Date &&
-    selectedRange[1] instanceof Date &&
-    Math.floor(
-      (toLocalMidnight(selectedRange[1]).getTime() - toLocalMidnight(selectedRange[0]).getTime()) /
-        (1000 * 60 * 60 * 24)
-    ) < 2;
+  // Warunki pokazywania formularza / ostrzeżenia
+  const showForm = selectedDaysCount >= 3;
+  const tooShortRange = selectedDaysCount > 0 && selectedDaysCount < 3;
 
-  /** Submit */
+  // Wysyłka formularza
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrorMessage('');
@@ -142,14 +134,10 @@ export default function RezerwacjaKalendarz() {
     }
 
     if (selectedRange) {
-      // Upewniamy się, że zapisujemy pełne doby
       const start = toLocalMidnight(selectedRange[0]);
       const end = endOfLocalDay(selectedRange[1]);
 
-      const diffDays = Math.floor(
-        (toLocalMidnight(end).getTime() - toLocalMidnight(start).getTime()) / (1000 * 60 * 60 * 24)
-      );
-      if (diffDays < 2) {
+      if (selectedDaysCount < 3) {
         setErrorMessage('Minimalny czas pobytu to 2 doby.');
         setLoading(false);
         return;
@@ -159,7 +147,7 @@ export default function RezerwacjaKalendarz() {
       formData.append('_subject', 'Nowa rezerwacja przez stronę Luisówka');
 
       try {
-        // Limit: 1 wysłanie dziennie dla tego samego imienia/nazwiska
+        // Limit jednej rezerwacji dziennie dla tej samej osoby
         const q = query(collection(db, 'rezerwacje'), where('name', '==', name));
         const snapshot = await getDocs(q);
         const today = toLocalMidnight(new Date());
@@ -173,7 +161,7 @@ export default function RezerwacjaKalendarz() {
           return;
         }
 
-        // Zapis pełnych dób do Firestore
+        // Zapis do Firestore
         await addDoc(collection(db, 'rezerwacje'), {
           name,
           email,
@@ -183,15 +171,11 @@ export default function RezerwacjaKalendarz() {
           createdAt: Timestamp.now(),
         });
 
-        // Optymistycznie zablokuj dni natychmiast (bez odświeżania)
-        const newDays = enumerateLocalDays(start, end);
-        setBookedDates((prev) => {
-          const next = new Set(prev);
-          newDays.forEach((d) => next.add(d));
-          return next;
-        });
+        // Optymistyczne dodanie do zajętych dni
+        enumerateLocalDays(start, end).forEach((d) => bookedDates.add(d));
+        setBookedDates(new Set(bookedDates));
 
-        // Mail przez FormSubmit
+        // Wysyłka maila
         const response = await fetch('https://formsubmit.co/ajax/kontakt@luisowka.com', {
           method: 'POST',
           headers: { Accept: 'application/json' },
