@@ -1,7 +1,6 @@
 'use client';
 
 import { Reservation } from '@/components/Admin/types';
-import { FaTrashAlt, FaEdit } from 'react-icons/fa';
 
 interface Props {
   reservations: Reservation[];
