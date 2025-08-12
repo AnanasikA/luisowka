@@ -23,7 +23,7 @@ const formatLocal = (d: Date) => {
 const enumerateLocalDays = (start: Date, end: Date): string[] => {
   const res: string[] = [];
   const cur = toLocalMidnight(start);
-  const last = toLocalMidnight(end);
+  const last = endOfLocalDay(end); // <-- jedyna zmiana: liczymy do końca dnia
   while (cur.getTime() <= last.getTime()) {
     res.push(formatLocal(cur));
     cur.setDate(cur.getDate() + 1);
