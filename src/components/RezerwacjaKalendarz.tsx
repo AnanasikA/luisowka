@@ -23,7 +23,7 @@ const formatLocal = (d: Date) => {
 const enumerateLocalDays = (start: Date, end: Date): string[] => {
   const res: string[] = [];
   const cur = toLocalMidnight(start);
-  const last = endOfLocalDay(end); // <-- jedyna zmiana: liczymy do końca dnia
+  const last = endOfLocalDay(end); // liczymy do końca dnia
   while (cur.getTime() <= last.getTime()) {
     res.push(formatLocal(cur));
     cur.setDate(cur.getDate() + 1);
@@ -87,7 +87,7 @@ export default function RezerwacjaKalendarz() {
         return;
       }
 
-      // Ustawienie pełnych dób
+      // Ustawienie pełnych dób (w stanie może zostać jak masz)
       setSelectedRange([start, endOfLocalDay(end)]);
     } else {
       setSelectedRange(null);
@@ -196,6 +196,9 @@ export default function RezerwacjaKalendarz() {
     setLoading(false);
   };
 
+  // Klucz wymuszający rerender kalendarza, gdy zmieni się "dzisiaj" lub liczba zajętych dni
+  const calendarKey = `cal-${formatLocal(new Date())}-${bookedDates.size}`;
+
   return (
     <section id="rezerwacja" className="bg-[#fdfbf7] py-24 px-6 text-[#3f4a3c]">
       <div className="max-w-6xl mx-auto text-center">
@@ -212,8 +215,10 @@ export default function RezerwacjaKalendarz() {
           <div className="w-full md:w-1/2 flex items-start justify-center p-6">
             <div className="w-full flex justify-center items-start pt-4">
               <Calendar
+                key={calendarKey}
                 onChange={handleDateChange}
                 value={selectedRange}
+                minDate={toLocalMidnight(new Date())}   // ⬅️ globalna blokada przeszłości
                 tileDisabled={({ date }) => isDateDisabled(date)}
                 calendarType="iso8601"
                 locale="pl-PL"
