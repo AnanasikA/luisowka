@@ -29,10 +29,10 @@ export default function Hero() {
         muted
         playsInline
         poster="/hero-placeholder.webp"
-        className="absolute inset-0 left-0 right-0 top-0 bottom-0 w-auto min-w-full min-h-full max-w-none object-cover z-0"
+        className="absolute inset-0 w-auto min-w-full min-h-full object-cover z-0"
       >
-        <source src="/hero.webm" type="video/webm" />
-        <source src="/hero.mp4" type="video/mp4" />
+         <source src="/hero.webm" type="video/webm" />
+         <source src="/hero.mp4"  type="video/mp4"  />
         Twoja przeglądarka nie obsługuje wideo HTML5.
       </video>
 
