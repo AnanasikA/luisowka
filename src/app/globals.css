@@ -9,21 +9,21 @@
   --font-body: "Open Sans", sans-serif;
   --font-heading: "Playfair Display", serif;
 }
-
 html {
-  overflow-x: hidden;
-   max-width: 100vw;
+  overflow: visible;
+  width: 100%;
 }
 
-/* 🌱 Bazowe style ciała */
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-body);
   scroll-behavior: smooth;
-  overflow-x: hidden;
-   max-width: 100vw;
+  overflow: visible!important;
+  width: 100%;
+  min-height: 100%;
 }
+
 
 /* 🔤 Nagłówki */
 h1, h2, h3, h4, h5, h6 {

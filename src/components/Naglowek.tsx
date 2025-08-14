@@ -17,8 +17,31 @@ export default function Naglowek() {
   ];
 
   useEffect(() => {
-    document.body.style.overflow = menuOpen || showModal ? 'hidden' : 'auto';
-  }, [menuOpen, showModal]);
+  // blokujemy <html>, nie <body>, i kompensujemy szerokość paska
+  const docEl = document.documentElement;
+
+  // SSR-safe
+  const getScrollbarWidth = () => {
+    if (typeof window === 'undefined') return 0;
+    return window.innerWidth - docEl.clientWidth;
+  };
+
+  const lock = menuOpen || showModal;
+  if (lock) {
+    const sw = getScrollbarWidth();
+    docEl.style.overflow = 'hidden';
+    if (sw > 0) docEl.style.paddingRight = `${sw}px`;
+  } else {
+    docEl.style.overflow = '';
+    docEl.style.paddingRight = '';
+  }
+
+  return () => {
+    docEl.style.overflow = '';
+    docEl.style.paddingRight = '';
+  };
+}, [menuOpen, showModal]);
+
 
   const handleScrollWithPath = (targetId: string) => {
     const el = document.getElementById(targetId);
@@ -31,7 +54,7 @@ export default function Naglowek() {
   <>
     {/* Główna nawigacja */}
     <header
-      className={`fixed top-6 left-1/2 transform -translate-x-1/2 z-50 w-[95%] md:w-[90%] lg:w-[80%] bg-[#3f4a3c]/90 text-[#fdfbf7] rounded-full shadow-md px-6 py-3 backdrop-blur-md transition-opacity duration-300 ${
+      className={`fixed top-6 left-1/2 transform -translate-x-1/2 z-50 w-[95%] md:w-[90%] lg:w-[80%] bg-[#3f4a3c] text-[#fdfbf7] rounded-full shadow-md px-6 py-3 backdrop-blur-md transition-opacity duration-300 ${
         menuOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'
       } animate-fade-down`}
     >
