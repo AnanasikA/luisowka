@@ -1,74 +1,76 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 
-export const runtime = 'nodejs'; // ważne dla nodemailer na Vercelu
-export const dynamic = 'force-dynamic';
+const {
+  SMTP_HOST,
+  SMTP_PORT,
+  SMTP_USER,
+  SMTP_PASS,
+  SMTP_FROM,
+  SMTP_TO,
+} = process.env;
 
-// Prosty GET – żeby pod /api/email nie było 404 przy wejściu z przeglądarki
+// Prosty test GET – już widziałaś że działa
 export async function GET() {
   return NextResponse.json({ ok: true, message: 'Email API działa (GET)' });
 }
 
-export async function POST(request: Request) {
+export async function POST(req: Request) {
   try {
-    const body = await request.json();
+    const body = await req.json();
+    console.log('EMAIL API body:', body);
 
-    const name: string = body.name || body['Imię i nazwisko'] || '';
-    const email: string = body.email || body['E-mail'] || '';
-    const message: string = body.message || body['Wiadomość'] || '';
+    const { type, name, email, message } = body || {};
 
-    if (!name || !email || !message) {
+    // Walidacja minimalna
+    if (!type || !name || !email || !message) {
+      console.warn('Brak wymaganych pól w body:', body);
       return NextResponse.json(
         { ok: false, error: 'MISSING_FIELDS' },
         { status: 400 }
       );
     }
 
-    const host = process.env.SMTP_HOST;
-    const port = Number(process.env.SMTP_PORT || '465');
-    const user = process.env.SMTP_USER;
-    const pass = process.env.SMTP_PASS;
-    const from = process.env.SMTP_FROM || user;
-    const to = process.env.SMTP_TO || user;
-
-    if (!host || !port || !user || !pass || !to) {
-      console.error('Brak wymaganych zmiennych SMTP w env');
-      return NextResponse.json(
-        { ok: false, error: 'SMTP_CONFIG_MISSING' },
-        { status: 500 }
-      );
-    }
-
+    // Transporter SMTP
     const transporter = nodemailer.createTransport({
-      host,
-      port,
-      secure: port === 465, // 465 = SSL
-      auth: { user, pass },
+      host: SMTP_HOST,
+      port: Number(SMTP_PORT || 465),
+      secure: true,
+      auth: {
+        user: SMTP_USER,
+        pass: SMTP_PASS,
+      },
     });
 
-    const text = `
-Nowa wiadomość z formularza Luisówka:
+    // Wysyłka maila
+    await transporter.sendMail({
+      from: SMTP_FROM,
+      to: SMTP_TO,
+      replyTo: email,
+      subject:
+        type === 'contact'
+          ? 'Nowa wiadomość z formularza kontaktowego – Luisówka'
+          : 'Nowa wiadomość ze strony Luisówka',
+      text: `
+Typ wiadomości: ${type}
 
 Imię i nazwisko: ${name}
 E-mail: ${email}
 
 Treść wiadomości:
 ${message}
-    `.trim();
-
-    await transporter.sendMail({
-      from,
-      to,
-      replyTo: email || from,
-      subject: 'Nowa wiadomość z formularza kontaktowego – Luisówka',
-      text,
+      `.trim(),
     });
 
     return NextResponse.json({ ok: true });
-  } catch (err) {
-    console.error('Błąd wysyłania maila:', err);
+  } catch (err: any) {
+    console.error('EMAIL_ERROR', err);
     return NextResponse.json(
-      { ok: false, error: 'EMAIL_ERROR' },
+      {
+        ok: false,
+        error: 'EMAIL_ERROR',
+        details: err?.message ?? 'Unknown error',
+      },
       { status: 500 }
     );
   }
