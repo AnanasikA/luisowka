@@ -1,79 +1,75 @@
+import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
+
+export const runtime = 'nodejs'; // ważne dla nodemailer na Vercelu
+export const dynamic = 'force-dynamic';
+
+// Prosty GET – żeby pod /api/email nie było 404 przy wejściu z przeglądarki
+export async function GET() {
+  return NextResponse.json({ ok: true, message: 'Email API działa (GET)' });
+}
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    const {
-      type = 'contact',
-      name,
-      email,
-      message,
-      checkIn,
-      checkOut,
-      guests,
-    } = body;
+    const name: string = body.name || body['Imię i nazwisko'] || '';
+    const email: string = body.email || body['E-mail'] || '';
+    const message: string = body.message || body['Wiadomość'] || '';
 
-    // Sprawdzenie podstawowych danych
     if (!name || !email || !message) {
-      return new Response(
-        JSON.stringify({ ok: false, error: 'MISSING_FIELDS' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      return NextResponse.json(
+        { ok: false, error: 'MISSING_FIELDS' },
+        { status: 400 }
       );
     }
 
-    // Konfiguracja SMTP – CyberFolks
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT) || 465,
-      secure: true, // port 465 = SSL
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    });
+    const host = process.env.SMTP_HOST;
+    const port = Number(process.env.SMTP_PORT || '465');
+    const user = process.env.SMTP_USER;
+    const pass = process.env.SMTP_PASS;
+    const from = process.env.SMTP_FROM || user;
+    const to = process.env.SMTP_TO || user;
 
-    const subject =
-      type === 'reservation'
-        ? 'Nowe zapytanie o rezerwację – Luisówka'
-        : 'Nowa wiadomość z formularza kontaktowego – Luisówka';
-
-    // Składamy treść maila
-    const lines: string[] = [];
-
-    lines.push(`Typ wiadomości: ${type === 'reservation' ? 'Rezerwacja' : 'Kontakt'}`);
-    lines.push(`Imię i nazwisko: ${name}`);
-    lines.push(`E-mail: ${email}`);
-
-    if (checkIn || checkOut || guests) {
-      lines.push('');
-      lines.push('Szczegóły pobytu:');
-      if (checkIn) lines.push(`Przyjazd: ${checkIn}`);
-      if (checkOut) lines.push(`Wyjazd: ${checkOut}`);
-      if (guests) lines.push(`Liczba gości: ${guests}`);
+    if (!host || !port || !user || !pass || !to) {
+      console.error('Brak wymaganych zmiennych SMTP w env');
+      return NextResponse.json(
+        { ok: false, error: 'SMTP_CONFIG_MISSING' },
+        { status: 500 }
+      );
     }
 
-    lines.push('');
-    lines.push('Wiadomość:');
-    lines.push(message as string);
+    const transporter = nodemailer.createTransport({
+      host,
+      port,
+      secure: port === 465, // 465 = SSL
+      auth: { user, pass },
+    });
+
+    const text = `
+Nowa wiadomość z formularza Luisówka:
+
+Imię i nazwisko: ${name}
+E-mail: ${email}
+
+Treść wiadomości:
+${message}
+    `.trim();
 
     await transporter.sendMail({
-      from: process.env.SMTP_FROM, // np. "Luisówka <kontakt@luisowka.com>"
-      to: process.env.SMTP_TO,     // na jaki adres wysyłamy
-      replyTo: email as string,    // gdy klikniesz "Odpowiedz", pójdzie do klienta
-      subject,
-      text: lines.join('\n'),
+      from,
+      to,
+      replyTo: email || from,
+      subject: 'Nowa wiadomość z formularza kontaktowego – Luisówka',
+      text,
     });
 
-    return new Response(JSON.stringify({ ok: true }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
-  } catch (error) {
-    console.error('SMTP error:', error);
-    return new Response(
-      JSON.stringify({ ok: false, error: 'EMAIL_ERROR' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    console.error('Błąd wysyłania maila:', err);
+    return NextResponse.json(
+      { ok: false, error: 'EMAIL_ERROR' },
+      { status: 500 }
     );
   }
 }
