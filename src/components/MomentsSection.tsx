@@ -127,13 +127,13 @@ export default function MomentsSection() {
               <input type="hidden" name="_captcha" value="false" />
 
               <input
-                type="text"
-                name="Imię i nazwisko"
-                placeholder="Imię i nazwisko"
-                required
-                pattern="^[A-Za-zĄąĆćĘęŁłŃńÓóŚśŹźŻż]{2,}(?:\\s+[A-Za-zĄąĆćĘęŁłŃńÓóŚśŹźŻż]{2,})+$"
-                title="Podaj pełne imię i nazwisko"
-                className="w-full border border-gray-300 p-2 rounded"
+                 type="text"
+                 name="Imię i nazwisko"
+                 placeholder="Imię i nazwisko"
+                 required
+                 pattern="^[A-Za-zĄąĆćĘęŁłŃńÓóŚśŹźŻż\\s'-]{3,}$"
+                 title="Podaj imię i nazwisko (minimum 3 znaki, tylko litery)"
+                 className="w-full border border-gray-300 p-2 rounded"
               />
               <input
                 type="email"
