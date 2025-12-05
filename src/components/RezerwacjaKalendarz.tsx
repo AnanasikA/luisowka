@@ -11,7 +11,7 @@ import { FiAlertTriangle } from 'react-icons/fi';
 type ValuePiece = Date | null;
 type Value = [ValuePiece, ValuePiece] | ValuePiece;
 
-// --- Funkcje pomocnicze dla dat ---
+// --- Funkcje pomocniczne dla dat ---
 const toLocalMidnight = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
 const endOfLocalDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59, 999);
 const formatLocal = (d: Date) => {
@@ -125,6 +125,7 @@ export default function RezerwacjaKalendarz() {
     const name = formData.get('Imię i nazwisko')?.toString().trim();
     const email = formData.get('E-mail')?.toString().trim();
     const phone = formData.get('Telefon')?.toString().trim();
+    const optionalMessage = formData.get('Wiadomość (opcjonalna)')?.toString().trim() || '';
 
     const nameRegex = /^[A-Za-zÀ-ÿżźćńółęąśŻŹĆĄŚĘŁÓŃ\s'-]{2,}$/;
     if (!name || !nameRegex.test(name)) {
@@ -143,7 +144,11 @@ export default function RezerwacjaKalendarz() {
         return;
       }
 
-      formData.append('Zakres dat', `${start.toLocaleDateString('pl-PL')} – ${selectedRange[1].toLocaleDateString('pl-PL')}`);
+      // To zostaje – może się jeszcze przydać
+      formData.append(
+        'Zakres dat',
+        `${start.toLocaleDateString('pl-PL')} – ${selectedRange[1].toLocaleDateString('pl-PL')}`
+      );
       formData.append('_subject', 'Nowa rezerwacja przez stronę Luisówka');
 
       try {
@@ -175,16 +180,28 @@ export default function RezerwacjaKalendarz() {
         enumerateLocalDays(start, end).forEach((d) => bookedDates.add(d));
         setBookedDates(new Set(bookedDates));
 
-        // Wysyłka maila
-        const response = await fetch('https://formsubmit.co/ajax/kontakt@luisowka.com', {
+        // 🔄 ZAMIANA: wysyłka maila już nie przez FormSubmit, tylko przez /api/email
+        const payload = {
+          type: 'reservation',
+          name,
+          email,
+          phone,
+          message: optionalMessage,
+          checkIn: start.toISOString(),
+          checkOut: end.toISOString(),
+          rangeText: `${start.toLocaleDateString('pl-PL')} – ${selectedRange[1].toLocaleDateString('pl-PL')}`,
+        };
+
+        const response = await fetch('/api/email', {
           method: 'POST',
-          headers: { Accept: 'application/json' },
-          body: formData,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
         });
 
         if (response.ok) {
           setSubmitted(true);
         } else {
+          console.error('Błąd odpowiedzi API:', await response.text());
           setErrorMessage('Wystąpił błąd przy wysyłce e-maila.');
         }
       } catch (error) {
