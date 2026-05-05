@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ADMIN_USER, ADMIN_PASS } from '@/lib/env.client';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
 
 export default function LoginForm() {
   const router = useRouter();
@@ -12,16 +14,30 @@ export default function LoginForm() {
   const [error, setError] = useState('');
   const [showPass, setShowPass] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
 
-    if (login === ADMIN_USER && pass === ADMIN_PASS) {
+    if (login !== ADMIN_USER || pass !== ADMIN_PASS) {
+      setError('Nieprawidłowy login lub hasło');
+      return;
+    }
+
+    try {
+      await signInWithEmailAndPassword(
+        auth,
+        'kontakt@luisowka.com',
+        'Sekret123'
+      );
+
       const token = Date.now().toString();
       localStorage.setItem('admin', token);
       localStorage.setItem('admin_token_time', token);
+
       router.push('/admin');
-    } else {
-      setError('Nieprawidłowy login lub hasło');
+    } catch (error) {
+      console.error(error);
+      setError('Błąd logowania do Firebase. Sprawdź użytkownika w Authentication.');
     }
   };
 
@@ -31,7 +47,9 @@ export default function LoginForm() {
         onSubmit={handleLogin}
         className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm border border-[#8d6e63]"
       >
-        <h2 className="text-xl font-bold mb-4 text-center font-serif">Logowanie do panelu</h2>
+        <h2 className="text-xl font-bold mb-4 text-center font-serif">
+          Logowanie do panelu
+        </h2>
 
         {error && (
           <div className="bg-red-100 text-red-700 px-4 py-2 rounded mb-4 text-sm text-center">
@@ -55,6 +73,7 @@ export default function LoginForm() {
             onChange={(e) => setPass(e.target.value)}
             className="w-full px-4 py-2 border rounded"
           />
+
           <button
             type="button"
             onClick={() => setShowPass(!showPass)}

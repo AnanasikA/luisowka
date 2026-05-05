@@ -29,24 +29,42 @@ export default function DeleteByDate({ reservations, onDelete }: Props) {
     return new Date(value);
   };
 
+  console.log('Wszystkie rezerwacje:', reservations);
+
   const overlapping = reservations.filter((r) => {
     const reservationStart = toDate(r.start);
     const reservationEnd = toDate(r.end);
 
+    console.log('Sprawdzam:', {
+      id: r.id,
+      start: reservationStart,
+      end: reservationEnd,
+    });
+
     return startDate <= reservationEnd && endDate >= reservationStart;
   });
+
+  console.log('Do usunięcia:', overlapping);
 
   if (overlapping.length === 0) {
     alert('Brak pasujących rezerwacji.');
     return;
   }
 
-  for (const r of overlapping) {
-    await deleteDoc(doc(db, 'rezerwacje', r.id));
-    onDelete(r.id);
-  }
+  try {
+    for (const r of overlapping) {
+      console.log('Usuwam dokument ID:', r.id);
 
-  alert(`Usunięto ${overlapping.length} rezerwacji w podanym zakresie.`);
+      await deleteDoc(doc(db, 'rezerwacje', r.id));
+
+      onDelete(r.id);
+    }
+
+    alert(`Usunięto ${overlapping.length} rezerwacji.`);
+  } catch (error) {
+    console.error('Błąd usuwania:', error);
+    alert('Nie udało się usunąć rezerwacji. Sprawdź konsolę.');
+  }
 };
 
   return (
