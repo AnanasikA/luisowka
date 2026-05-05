@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { deleteDoc, doc, getDocs, collection } from 'firebase/firestore';
+import { deleteDoc, doc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Reservation } from '@/components/Admin/types';
 
@@ -16,30 +16,38 @@ export default function DeleteByDate({ reservations, onDelete }: Props) {
   const [end, setEnd] = useState('');
 
   const handleDelete = async () => {
-    if (!start || !end) {
-      alert('Wybierz zakres dat do usunięcia.');
-      return;
-    }
+  if (!start || !end) {
+    alert('Wybierz zakres dat do usunięcia.');
+    return;
+  }
 
-    const startDate = new Date(start);
-    const endDate = new Date(end);
+  const startDate = new Date(start);
+  const endDate = new Date(end);
 
-    const overlapping = reservations.filter(
-      (r) => startDate <= r.end && endDate >= r.start
-    );
-
-    if (overlapping.length === 0) {
-      alert('Brak pasujących rezerwacji.');
-      return;
-    }
-
-    for (const r of overlapping) {
-      await deleteDoc(doc(db, 'rezerwacje', r.id));
-      onDelete(r.id);
-    }
-
-    alert(`Usunięto ${overlapping.length} rezerwacji w podanym zakresie.`);
+  const toDate = (value: any) => {
+    if (value?.toDate) return value.toDate();
+    return new Date(value);
   };
+
+  const overlapping = reservations.filter((r) => {
+    const reservationStart = toDate(r.start);
+    const reservationEnd = toDate(r.end);
+
+    return startDate <= reservationEnd && endDate >= reservationStart;
+  });
+
+  if (overlapping.length === 0) {
+    alert('Brak pasujących rezerwacji.');
+    return;
+  }
+
+  for (const r of overlapping) {
+    await deleteDoc(doc(db, 'rezerwacje', r.id));
+    onDelete(r.id);
+  }
+
+  alert(`Usunięto ${overlapping.length} rezerwacji w podanym zakresie.`);
+};
 
   return (
     <div className="mb-10 p-6 bg-[#fdfbf7] border border-[#8d6e63] rounded-lg space-y-4">
